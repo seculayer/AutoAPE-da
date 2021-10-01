@@ -1,2 +1,2 @@
 # automl-da
-AutoML DataAnalyer
+AutoML DataAnalyzer
