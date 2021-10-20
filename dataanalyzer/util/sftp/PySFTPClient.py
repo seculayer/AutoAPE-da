@@ -5,8 +5,8 @@
 from typing import List
 
 import paramiko
-from automl_common.crypto.AES256 import AES256
-from automl_common.sftp.PySFTPAuthException import PySFTPAuthException
+from dataanalyzer.util.crypto.AES256 import AES256
+from dataanalyzer.util.sftp.PySFTPAuthException import PySFTPAuthException
 
 
 class PySFTPClient(object):

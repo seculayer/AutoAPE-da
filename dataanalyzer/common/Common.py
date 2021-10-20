@@ -4,9 +4,9 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center. 
 
 # ---- automl packages
-from automl_common.Singleton import Singleton
-from automl_common.logger.MPLogger import MPLogger
-from automl_common.utils.FileUtils import FileUtils
+from dataanalyzer.util.Singleton import Singleton
+from dataanalyzer.util.logger.MPLogger import MPLogger
+from dataanalyzer.util.FileUtils import FileUtils
 from dataanalyzer.common.Constants import Constants
 
 

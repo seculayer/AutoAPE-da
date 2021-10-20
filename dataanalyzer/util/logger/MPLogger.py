@@ -6,7 +6,7 @@
 import logging
 import logging.config
 
-from automl_common.logger.MPLogHandler import MPLogHandler
+from dataanalyzer.util.logger.MPLogHandler import MPLogHandler
 
 
 # class : MPLogger
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     from multiprocessing import Process, Queue
     import time
 
-    _logger = MPLogger(log_dir=".", log_name="test", log_level="INFO").get_logger()
+    _logger = MPLogger(log_dir="", log_name="test", log_level="INFO").get_logger()
 
 
     def worker_process():

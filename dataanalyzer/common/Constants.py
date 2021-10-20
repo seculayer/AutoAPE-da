@@ -5,9 +5,9 @@
 
 import os
 
-from automl_common.Singleton import Singleton
-from automl_common.utils.ConfigUtils import ConfigUtils
-from automl_common.utils.FileUtils import FileUtils
+from dataanalyzer.util.Singleton import Singleton
+from dataanalyzer.util.ConfigUtils import ConfigUtils
+from dataanalyzer.util.FileUtils import FileUtils
 
 import os
 os.chdir(FileUtils.get_realpath(__file__) + "/../../")
