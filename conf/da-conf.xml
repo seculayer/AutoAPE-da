@@ -1,0 +1,37 @@
+<configuration>
+    <!-- app path setting -->
+    <property>
+        <name>dir_data_root</name>
+        <value>/home/eyecloudai/automl/dev/automl-dataanalyzer/data</value>
+        <description>Data root directory</description>
+    </property>
+    <!-- log setting -->
+    <property>
+        <name>dir_log</name>
+        <value>/home/eyecloudai/automl/dev/automl-dataanalyzer/logs</value>
+        <description>None</description>
+    </property>
+    <property>
+        <name>log_name</name>
+        <value>DataAnalyzer</value>
+        <description>None</description>
+    </property>
+    <property>
+        <name>log_level</name>
+        <value>INFO</value>
+        <description>[INFO, DEBUG, WARN, ERROR, CRITICAL]</description>
+    </property>
+    <!-- hosts -->
+    <property>
+        <name>mrms_svc</name>
+        <value>10.1.35.115:22</value>
+    </property>
+    <property>
+        <name>mrms_username</name>
+        <value>Kmw/y3YWiiO7gJ/zqMvCuw==</value>
+    </property>
+    <property>
+        <name>mrms_password</name>
+        <value>jTf6XrqcYX1SAhv9JUPq+w==</value>
+    </property>
+</configuration>
