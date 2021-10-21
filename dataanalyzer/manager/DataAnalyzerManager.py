@@ -3,7 +3,7 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 
-from automl_common.info.DAJobInfo import DAJobInfo
+from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.common.Common import Common
 from dataanalyzer.manager.SFTPClientManager import SFTPClientManager

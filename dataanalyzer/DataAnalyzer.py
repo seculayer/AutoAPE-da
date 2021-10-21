@@ -8,8 +8,8 @@ import time
 import signal
 
 # ---- automl packages
-from automl_common.Singleton import Singleton
-from automl_common.thread.KubePodSafetyTermThread import KubePodSafetyTermThread
+from dataanalyzer.util.Singleton import Singleton
+from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
 from dataanalyzer.common.Common import Common
 from dataanalyzer.manager.DataAnalyzerManager import DataAnalyzerManager
 
