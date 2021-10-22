@@ -23,15 +23,27 @@
     </property>
     <!-- hosts -->
     <property>
+        <name>storage_svc</name>
+        <value>ape-storage-svc</value>
+    </property>
+    <property>
+        <name>storage_sftp_port</name>
+        <value>10122</value>
+    </property>
+    <property>
         <name>mrms_svc</name>
-        <value>10.1.35.115:22</value>
+        <value>mrms-svc</value>
     </property>
     <property>
-        <name>mrms_username</name>
-        <value>Kmw/y3YWiiO7gJ/zqMvCuw==</value>
+        <name>mrms_sftp_port</name>
+        <value>10022</value>
     </property>
     <property>
-        <name>mrms_password</name>
-        <value>jTf6XrqcYX1SAhv9JUPq+w==</value>
+        <name>ssh_username</name>
+        <value>[@sshusername]</value>
+    </property>
+    <property>
+        <name>ssh_password</name>
+        <value>[@sshpassword]</value>
     </property>
 </configuration>

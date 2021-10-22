@@ -27,11 +27,16 @@ class Constants(metaclass=Singleton):
     LOG_NAME = _CONFIG.get("log_name", "DataAnalyzer")
 
     # Hosts
+    STORAGE_SVC = _CONFIG.get("storage_svc")
+    STORAGE_SFTP_PORT = _CONFIG.get("storage_sftp_port")
+
     MRMS_SVC = _CONFIG.get("mrms_svc")
-    MRMS_USER = _CONFIG.get("mrms_username")
-    MRMS_PASSWD = _CONFIG.get("mrms_password")
+    MRMS_SFTP_PORT = _CONFIG.get("mrms_sftp_port")
+
+    SSH_USER = _CONFIG.get("ssh_username")
+    SSH_PASSWD = _CONFIG.get("ssh_password")
 
 
 if __name__ == '__main__':
     print(Constants.DIR_DATA_ROOT)
-
+    print(Constants._CONFIG)

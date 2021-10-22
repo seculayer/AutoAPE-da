@@ -18,7 +18,11 @@ class DataAnalyzerManager(object):
         self.job_info = DAJobInfo(filename)
         self.logger.info(str(self.job_info))
 
-        self.mrms_sftp_manager: SFTPClientManager = SFTPClientManager(Constants.MRMS_SVC, Constants.MRMS_USER, Constants.MRMS_PASSWD)
+        self.mrms_sftp_manager: SFTPClientManager = SFTPClientManager(
+            Constants.MRMS_SVC, Constants.MRMS_USER, Constants.MRMS_PASSWD)
+
+        self.storage_sftp_manager: SFTPClientManager = SFTPClientManager(
+            Constants.MRMS_SVC, Constants.MRMS_USER, Constants.MRMS_PASSWD)
 
         self.logger.info("DataAnalyzerManager initialized.")
 
