@@ -39,7 +39,7 @@ class APEPythonSetup(object):
                 "conf": "conf",
                 "resources": "resources"
             },
-            python_requires='>3.7.7',
+            python_requires='>3.7',
             package_data={
                 # self.module_nm: FILE_LIST
             },

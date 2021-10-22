@@ -39,4 +39,3 @@ class Constants(metaclass=Singleton):
 
 if __name__ == '__main__':
     print(Constants.DIR_DATA_ROOT)
-    print(Constants._CONFIG)
