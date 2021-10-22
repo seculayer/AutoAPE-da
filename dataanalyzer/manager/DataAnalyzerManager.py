@@ -11,20 +11,26 @@ from dataanalyzer.manager.SFTPClientManager import SFTPClientManager
 
 class DataAnalyzerManager(object):
     # class : DataAnalyzerManager
-    def __init__(self, job_id, job_idx):
+    def __init__(self, job_id: str, job_idx: str):
         self.logger = Common.LOGGER.get_logger()
 
-        filename = Constants.DIR_DATA_ROOT + "/{}_{}.job".format(job_id, job_idx)
-        self.job_info = DAJobInfo(filename)
-        self.logger.info(str(self.job_info))
-
         self.mrms_sftp_manager: SFTPClientManager = SFTPClientManager(
-            Constants.MRMS_SVC, Constants.MRMS_USER, Constants.MRMS_PASSWD)
+            "{}:{}".format(Constants.MRMS_SVC, Constants.MRMS_SFTP_PORT),
+            Constants.SSH_USER, Constants.SSH_PASSWD)
 
         self.storage_sftp_manager: SFTPClientManager = SFTPClientManager(
-            Constants.MRMS_SVC, Constants.MRMS_USER, Constants.MRMS_PASSWD)
+            "{}:{}".format(Constants.STORAGE_SVC, Constants.STORAGE_SFTP_PORT),
+            Constants.SSH_USER, Constants.SSH_PASSWD)
+
+        self.job_info = self.load_job_info(job_id, job_idx)
+        self.logger.info(str(self.job_info))
 
         self.logger.info("DataAnalyzerManager initialized.")
+
+    @staticmethod
+    def load_job_info(job_id: str, job_idx: str):
+        filename = Constants.DIR_DATA_ROOT + "/{}_{}.job".format(job_id, job_idx)
+        return DAJobInfo(filename)
 
 
 if __name__ == '__main__':
