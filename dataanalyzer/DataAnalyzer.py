@@ -5,13 +5,12 @@
 
 # ---- python base packages
 import time
-import signal
 
-# ---- automl packages
-from dataanalyzer.util.Singleton import Singleton
-from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
 from dataanalyzer.common.Common import Common
 from dataanalyzer.manager.DataAnalyzerManager import DataAnalyzerManager
+from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
+# ---- automl packages
+from dataanalyzer.util.Singleton import Singleton
 
 
 # class : DataAnalyzer

@@ -2,13 +2,18 @@
     <!-- app path setting -->
     <property>
         <name>dir_data_root</name>
-        <value>/home/eyecloudai/automl/dev/automl-dataanalyzer/data</value>
+        <value>/eyeCloudAI/data</value>
+        <description>Data root directory</description>
+    </property>
+    <property>
+        <name>dir_data_analyzer</name>
+        <value>/processing/ape/da</value>
         <description>Data root directory</description>
     </property>
     <!-- log setting -->
     <property>
         <name>dir_log</name>
-        <value>/home/eyecloudai/automl/dev/automl-dataanalyzer/logs</value>
+        <value>[@app_dir]/logs</value>
         <description>None</description>
     </property>
     <property>

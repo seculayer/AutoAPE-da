@@ -20,6 +20,7 @@ class Constants(metaclass=Singleton):
 
     # Directories
     DIR_DATA_ROOT = _CONFIG.get("dir_data_root")
+    DIR_DATA_ANALYZER = DIR_DATA_ROOT + _CONFIG.get("dir_data_analyzer")
 
     # Logs
     DIR_LOG = _CONFIG.get("dir_log", "./logs")
