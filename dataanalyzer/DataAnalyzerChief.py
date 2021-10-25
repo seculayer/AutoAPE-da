@@ -7,7 +7,6 @@
 import time
 
 from dataanalyzer.common.Common import Common
-from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.manager.DataAnalyzerManager import DataAnalyzerManager
 from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
 # ---- automl packages
