@@ -13,13 +13,18 @@ class DAJobInfo(JobInfo):
         JobInfo.__init__(self, filename)
 
         self.job_id = self.job_info_dict.get("job_id")
-        self.job_idx = self.job_info_dict.get("job_idx")
-        self.job_type = self.job_info_dict.get("job_type")
-        self.cluster: List = self.job_info_dict.get("cluster")
+        self.dataset_format = self.job_info_dict.get("dataset_format")
+        self.file_path = self.job_info_dict.get("file_path")
+
+    def get_filepath(self) -> str:
+        return self.file_path
+
+    def get_dataset_format(self) -> str:
+        return self.dataset_format
 
     def __str__(self) -> str:
         return "DataAnalyzerJobInfo = {" + \
-               "job_id : {}, job_idx : {}, job_type: {}, cluster: {}".format(
-                   self.job_id, self.job_idx, self.job_type, self.cluster
+               "job_id : {}, filepath : {}, dataset_format : {}".format(
+                   self.job_id, self.file_path, self.dataset_format
                ) + \
                "}"

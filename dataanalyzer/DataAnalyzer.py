@@ -7,6 +7,7 @@
 import time
 
 from dataanalyzer.common.Common import Common
+from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.manager.DataAnalyzerManager import DataAnalyzerManager
 from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
 # ---- automl packages
@@ -19,11 +20,14 @@ class DataAnalyzer(KubePodSafetyTermThread, metaclass=Singleton):
         KubePodSafetyTermThread.__init__(self)
         self.logger = Common.LOGGER.get_logger()
 
-        self.da_manager = DataAnalyzerManager(job_id, job_idx)
+        self.da_manager = DataAnalyzerManager()
+        self.da_manager.initialize(job_id, job_idx)
 
         self.logger.info("DataAnalyzer Initialized!")
 
     def run(self) -> None:
+        self.da_manager.data_loader()
+
         while not self._is_exit():
             time.sleep(1)
 

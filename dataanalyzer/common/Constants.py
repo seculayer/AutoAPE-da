@@ -37,6 +37,9 @@ class Constants(metaclass=Singleton):
     SSH_USER = _CONFIG.get("ssh_username")
     SSH_PASSWD = _CONFIG.get("ssh_password")
 
+    # DATASET FORMAT
+    DATASET_FORMAT_TABLE = 1
+
 
 if __name__ == '__main__':
     print(Constants.DIR_DATA_ROOT)
