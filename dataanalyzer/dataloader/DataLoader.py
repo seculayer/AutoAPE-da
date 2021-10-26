@@ -17,16 +17,4 @@ class DataLoader(object):
         self.dataset_meta: DatasetMeta = DatasetMeta()
 
     def load(self):
-        return {
-            Constants.DATASET_FORMAT_TABLE: self.load_table()
-        }.get(self.job_info.get_dataset_format())
-
-    def load_table(self):
-        f = self.sftp_client.open(self.job_info.get_filepath(), "r")
-        self.dataset_meta: TableDatasetMeta()
-        while True:
-            line = f.readline()
-            print(line)
-            if not line:
-                break
-        f.close()
+        raise NotImplementedError

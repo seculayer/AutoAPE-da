@@ -38,7 +38,13 @@ class Constants(metaclass=Singleton):
     SSH_PASSWD = _CONFIG.get("ssh_password")
 
     # DATASET FORMAT
-    DATASET_FORMAT_TABLE = 1
+    DATASET_FORMAT_TABLE = "1"
+
+    # TABLE FIELD TYPE
+    FIELD_TYPE_NULL = "null"
+    FIELD_TYPE_INT = "int"
+    FIELD_TYPE_FLOAT = "float"
+    FIELD_TYPE_STRING = "string"
 
 
 if __name__ == '__main__':

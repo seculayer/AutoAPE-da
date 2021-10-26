@@ -14,7 +14,7 @@ class DAJobInfo(JobInfo):
 
         self.job_id = self.job_info_dict.get("job_id")
         self.dataset_format = self.job_info_dict.get("dataset_format")
-        self.file_path = self.job_info_dict.get("file_path")
+        self.file_path = self.job_info_dict.get("format_json").get("file_path")
 
     def get_filepath(self) -> str:
         return self.file_path
@@ -22,9 +22,11 @@ class DAJobInfo(JobInfo):
     def get_dataset_format(self) -> str:
         return self.dataset_format
 
+    def get_filename(self) -> str:
+        return self.job_info_dict.get("format_json").get("file_name")
+
+    def get_field_list(self) -> List:
+        return self.job_info_dict.get("format_json").get("field_list")
+
     def __str__(self) -> str:
-        return "DataAnalyzerJobInfo = {" + \
-               "job_id : {}, filepath : {}, dataset_format : {}".format(
-                   self.job_id, self.file_path, self.dataset_format
-               ) + \
-               "}"
+        return "DataAnalyzerJobInfo = {}".format(self.job_info_dict)
