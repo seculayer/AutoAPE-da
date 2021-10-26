@@ -2,8 +2,10 @@
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
+from dataanalyzer.analyzer.table.Analyzer import Analyzer
 
-class BasicStatistics(object):
+
+class BasicStatistics(Analyzer):
     def __init__(self):
         self.min = None
         self.max = None
@@ -32,7 +34,9 @@ class BasicStatistics(object):
             return
         self.mean = self.sum / self.instances
 
-    def __str__(self):
-        return "{" + "min: {}, max: {}, mean: {}".format(
-            self.min, self.max, self.mean) \
-               + "}"
+    def to_dict(self):
+        return {
+            "min": self.min,
+            "max": self.max,
+            "mean": self.mean,
+        }

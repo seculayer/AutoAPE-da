@@ -28,5 +28,6 @@ class DataLoaderTable(DataLoader):
         self.dataset_meta.calculate()
 
         for meta in self.dataset_meta.meta_list:
-            print(str(meta.get("statistics").get("basic")))
+            for _ in meta.get("statistics").keys():
+                print(str(meta.get("statistics").get(_)))
         f.close()

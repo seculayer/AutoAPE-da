@@ -5,12 +5,15 @@
 from typing import Dict, List
 
 from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
+from dataanalyzer.analyzer.table.categorical.Unique import Unique
 from dataanalyzer.analyzer.table.numeric.BasicStatistics import BasicStatistics
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 
 class TableDatasetMeta(DatasetMeta):
+    COMMON_KEYS = ["unique"]
+
     def __init__(self):
         DatasetMeta.__init__(self)
 
@@ -32,7 +35,8 @@ class TableDatasetMeta(DatasetMeta):
                         Constants.FIELD_TYPE_STRING: 0,
                     },
                     "statistics": {
-                        "basic": BasicStatistics()
+                        "basic": BasicStatistics(),
+                        "unique": Unique()
                     }
                 }
             )
@@ -46,6 +50,11 @@ class TableDatasetMeta(DatasetMeta):
             if f_type is Constants.FIELD_TYPE_INT or f_type is Constants.FIELD_TYPE_FLOAT:
                 self.meta_list[idx].get("statistics").get("basic").apply(result)
 
+            # common
+            for _ in self.COMMON_KEYS:
+                self.meta_list[idx].get("statistics").get(_).apply(result)
+
     def calculate(self):
         for meta in self.meta_list:
-            meta.get("statistics").get("basic").calculate()
+            for _ in meta.get("statistics"):
+                meta.get("statistics").get(_).calculate()
