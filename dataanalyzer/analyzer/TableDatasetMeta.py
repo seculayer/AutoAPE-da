@@ -5,6 +5,7 @@
 from typing import Dict, List
 
 from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
+from dataanalyzer.analyzer.table.numeric.BasicStatistics import BasicStatistics
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
@@ -29,6 +30,9 @@ class TableDatasetMeta(DatasetMeta):
                         Constants.FIELD_TYPE_INT: 0,
                         Constants.FIELD_TYPE_FLOAT: 0,
                         Constants.FIELD_TYPE_STRING: 0,
+                    },
+                    "statistics": {
+                        "basic": BasicStatistics()
                     }
                 }
             )
@@ -37,3 +41,11 @@ class TableDatasetMeta(DatasetMeta):
         for idx, field_nm in enumerate(self.field_list):
             result, f_type = DatasetMeta._field_type(data.get(field_nm))
             self.meta_list[idx].get("field_type")[f_type] += 1
+
+            # numeric
+            if f_type is Constants.FIELD_TYPE_INT or f_type is Constants.FIELD_TYPE_FLOAT:
+                self.meta_list[idx].get("statistics").get("basic").apply(result)
+
+    def calculate(self):
+        for meta in self.meta_list:
+            meta.get("statistics").get("basic").calculate()

@@ -25,5 +25,8 @@ class DataLoaderTable(DataLoader):
             json_data = json.loads(line)
             self.dataset_meta.apply(json_data)
 
-        print(self.dataset_meta.meta_list)
+        self.dataset_meta.calculate()
+
+        for meta in self.dataset_meta.meta_list:
+            print(str(meta.get("statistics").get("basic")))
         f.close()
