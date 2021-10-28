@@ -13,7 +13,7 @@
     <!-- log setting -->
     <property>
         <name>dir_log</name>
-        <value>[@app_dir]/logs</value>
+        <value>/eyeCloudAI/logs</value>
         <description>None</description>
     </property>
     <property>
@@ -42,6 +42,10 @@
     <property>
         <name>mrms_sftp_port</name>
         <value>10022</value>
+    </property>
+    <property>
+        <name>mrms_rest_port</name>
+        <value>9200</value>
     </property>
     <property>
         <name>ssh_username</name>
