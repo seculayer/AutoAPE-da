@@ -2,6 +2,8 @@
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
+import http.client
+
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.dataloader.DataLoaderFactory import DataLoaderFactory
@@ -18,6 +20,8 @@ class DataAnalyzerManager(object, metaclass=Singleton):
         self.mrms_sftp_manager: SFTPClientManager = None
         self.storage_sftp_manager: SFTPClientManager = None
         self.job_info: DAJobInfo = None
+        self.http_client: http.client.HTTPConnection = http.client.HTTPConnection(
+            Constants.MRMS_SVC, Constants.MRMS_REST_PORT)
 
     def initialize(self, job_id: str, job_idx: str):
         self.mrms_sftp_manager = SFTPClientManager(
@@ -47,6 +51,11 @@ class DataAnalyzerManager(object, metaclass=Singleton):
     def data_loader(self):
         loader = DataLoaderFactory.make_data_loader(self.job_info, self.storage_sftp_manager.get_client())
         loader.load()
+
+    def request_worker_create(self):
+        self.http_client.request("GET", "/mrms/request_da_worker?id={}&num_worker={}".format(self.job_info.job_id, 0))
+        response = self.http_client.getresponse()
+        self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
 
     def terminate(self):
         self.mrms_sftp_manager.close()

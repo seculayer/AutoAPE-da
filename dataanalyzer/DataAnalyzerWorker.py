@@ -26,9 +26,6 @@ class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
     def run(self) -> None:
         self.da_manager.data_loader()
 
-        # request to mrms for worker create
-        self.da_manager.request_worker_create()
-
         # while not self._is_exit():
         #     time.sleep(1)
 

@@ -33,6 +33,7 @@ class Constants(metaclass=Singleton):
 
     MRMS_SVC = _CONFIG.get("mrms_svc")
     MRMS_SFTP_PORT = _CONFIG.get("mrms_sftp_port")
+    MRMS_REST_PORT = int(_CONFIG.get("mrms_rest_port"))
 
     SSH_USER = _CONFIG.get("ssh_username")
     SSH_PASSWD = _CONFIG.get("ssh_password")
