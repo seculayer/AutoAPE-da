@@ -13,8 +13,11 @@ class DataLoader(object):
     def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient):
         self.job_info: DAJobInfo = job_info
         self.sftp_client: PySFTPClient = sftp_client
-
         self.dataset_meta: DatasetMeta = DatasetMeta()
+        self.num_worker: int = 1
 
     def load(self):
         raise NotImplementedError
+
+    def get_num_worker(self):
+        return self.num_worker

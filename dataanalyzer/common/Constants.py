@@ -47,6 +47,7 @@ class Constants(metaclass=Singleton):
     FIELD_TYPE_FLOAT = "float"
     FIELD_TYPE_STRING = "string"
 
+    DISTRIBUTE_INSTANCES = 5000
 
 if __name__ == '__main__':
     print(Constants.DIR_DATA_ROOT)

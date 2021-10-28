@@ -28,5 +28,8 @@ class DAJobInfo(JobInfo):
     def get_field_list(self) -> List:
         return self.job_info_dict.get("format_json").get("field_list")
 
+    def get_instances(self):
+        return int(self.job_info_dict.get("n_rows"))
+
     def __str__(self) -> str:
         return "DataAnalyzerJobInfo = {}".format(self.job_info_dict)

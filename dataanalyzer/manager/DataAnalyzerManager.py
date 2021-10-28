@@ -6,6 +6,7 @@ import http.client
 
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
+from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.dataloader.DataLoaderFactory import DataLoaderFactory
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.manager.SFTPClientManager import SFTPClientManager
@@ -22,6 +23,7 @@ class DataAnalyzerManager(object, metaclass=Singleton):
         self.job_info: DAJobInfo = None
         self.http_client: http.client.HTTPConnection = http.client.HTTPConnection(
             Constants.MRMS_SVC, Constants.MRMS_REST_PORT)
+        self.loader: DataLoader = None
 
     def initialize(self, job_id: str, job_idx: str):
         self.mrms_sftp_manager = SFTPClientManager(
@@ -35,6 +37,7 @@ class DataAnalyzerManager(object, metaclass=Singleton):
         self.job_info = self.load_job_info(job_id, job_idx)
         self.logger.info(str(self.job_info))
 
+        self.loader = DataLoaderFactory.make_data_loader(self.job_info, self.storage_sftp_manager.get_client())
         self.logger.info("DataAnalyzerManager initialized.")
 
     @staticmethod
@@ -49,11 +52,11 @@ class DataAnalyzerManager(object, metaclass=Singleton):
         return self.storage_sftp_manager.get_client()
 
     def data_loader(self):
-        loader = DataLoaderFactory.make_data_loader(self.job_info, self.storage_sftp_manager.get_client())
-        loader.load()
+        self.loader.load()
 
     def request_worker_create(self):
-        self.http_client.request("GET", "/mrms/request_da_worker?id={}&num_worker={}".format(self.job_info.job_id, 0))
+        self.http_client.request("GET", "/mrms/request_da_worker?id={}&num_worker={}".format(
+            self.job_info.job_id, self.loader.get_num_worker()))
         response = self.http_client.getresponse()
         self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
 

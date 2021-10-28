@@ -29,14 +29,3 @@ class SFTPClientManager(object):
 
     def close(self):
         self.sftp_client.close()
-
-
-if __name__ == '__main__':
-    sftp_manager = SFTPClientManager("10.1.35.118:22", "Kmw/y3YWiiO7gJ/zqMvCuw==", "jTf6XrqcYX1SAhv9JUPq+w==")
-    with sftp_manager.get_client().open("/home/seculayer/temp.tmp", "w") as f:
-        f.write("test.1" + "\n")
-
-    with sftp_manager.get_client().open("/home/seculayer/temp.tmp", "r") as f:
-        for line in f.readlines():
-            print(line)
-    sftp_manager.close()
