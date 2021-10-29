@@ -5,12 +5,12 @@
 from typing import List
 
 from dataanalyzer.info.JobInfo import JobInfo
+from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 
 
-# class : DAJobInfo
 class DAJobInfo(JobInfo):
-    def __init__(self, filename: str):
-        JobInfo.__init__(self, filename)
+    def __init__(self, sftp_client: PySFTPClient, filename: str):
+        JobInfo.__init__(self, sftp_client, filename)
 
         self.job_id = self.job_info_dict.get("dataset_id")
         self.dataset_format = self.job_info_dict.get("dataset_format")

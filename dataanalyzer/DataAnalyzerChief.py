@@ -7,7 +7,7 @@
 import time
 
 from dataanalyzer.common.Common import Common
-from dataanalyzer.manager.DataAnalyzerManager import DataAnalyzerManager
+from dataanalyzer.manager.DataAnalyzerChiefManager import DataAnalyzerChiefManager
 from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
 from dataanalyzer.util.Singleton import Singleton
 
@@ -18,7 +18,7 @@ class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
         KubePodSafetyTermThread.__init__(self)
         self.logger = Common.LOGGER.get_logger()
 
-        self.da_manager = DataAnalyzerManager()
+        self.da_manager = DataAnalyzerChiefManager()
         self.da_manager.initialize(job_id, "0")
 
         self.logger.info("DataAnalyzer Initialized!")

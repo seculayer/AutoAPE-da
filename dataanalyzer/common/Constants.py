@@ -48,6 +48,8 @@ class Constants(metaclass=Singleton):
     FIELD_TYPE_FLOAT = "float"
     FIELD_TYPE_STRING = "string"
 
+    JOB_TYPE_CHIEF = "chief"
+    JOB_TYPE_WORKER = "worker"
     DISTRIBUTE_INSTANCES = 10000
 
 

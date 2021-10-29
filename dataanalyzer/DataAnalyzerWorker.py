@@ -4,10 +4,9 @@
 # Powered by Seculayer © 2020 AI Service Model Team, R&D Center.
 
 # ---- python base packages
-import time
 
 from dataanalyzer.common.Common import Common
-from dataanalyzer.manager.DataAnalyzerManager import DataAnalyzerManager
+from dataanalyzer.manager.DataAnalyzerWorkerManager import DataAnalyzerWorkerManager
 from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
 from dataanalyzer.util.Singleton import Singleton
 
@@ -18,17 +17,13 @@ class DataAnalyzerWorker(KubePodSafetyTermThread, metaclass=Singleton):
         KubePodSafetyTermThread.__init__(self)
         self.logger = Common.LOGGER.get_logger()
 
-        self.da_manager = DataAnalyzerManager()
+        self.da_manager = DataAnalyzerWorkerManager()
         self.da_manager.initialize(job_id, job_idx)
 
         self.logger.info("DataAnalyzer Initialized!")
 
     def run(self) -> None:
         self.da_manager.data_loader()
-
-        # while not self._is_exit():
-        #     time.sleep(1)
-
         self.da_manager.terminate()
         self.logger.info("DataAnalyzer terminate!")
 

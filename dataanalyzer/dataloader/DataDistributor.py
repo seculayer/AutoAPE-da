@@ -46,6 +46,8 @@ class DataDistributor(object):
             self.writer.close()
             self.writer = None
             filename = self.get_filename()
+            if self.mrms_sftp_client.is_exist(filename + ".done"):
+                self.mrms_sftp_client.remove(filename + ".done")
             self.mrms_sftp_client.rename(filename + ".tmp", filename + ".done")
 
     def write(self, data: Dict):

@@ -13,6 +13,7 @@ from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 class TableDatasetMeta(DatasetMeta):
     COMMON_KEYS = ["unique"]
+    NUMERIC_KEYS = ["basic"]
 
     def __init__(self):
         DatasetMeta.__init__(self)
@@ -28,7 +29,8 @@ class TableDatasetMeta(DatasetMeta):
                 {
                     "field_nm": field_nm,
                     "field_idx": idx,
-                    "field_type": {
+                    "field_type": None,
+                    "type_stat": {
                         Constants.FIELD_TYPE_NULL: 0,
                         Constants.FIELD_TYPE_INT: 0,
                         Constants.FIELD_TYPE_FLOAT: 0,
@@ -44,11 +46,12 @@ class TableDatasetMeta(DatasetMeta):
     def apply(self, data):
         for idx, field_nm in enumerate(self.field_list):
             result, f_type = DatasetMeta._field_type(data.get(field_nm))
-            self.meta_list[idx].get("field_type")[f_type] += 1
+            self.meta_list[idx].get("type_stat")[f_type] += 1
 
             # numeric
             if f_type is Constants.FIELD_TYPE_INT or f_type is Constants.FIELD_TYPE_FLOAT:
-                self.meta_list[idx].get("statistics").get("basic").apply(result)
+                for _ in self.NUMERIC_KEYS:
+                    self.meta_list[idx].get("statistics").get(_).apply(result)
 
             # common
             for _ in self.COMMON_KEYS:
@@ -56,11 +59,33 @@ class TableDatasetMeta(DatasetMeta):
 
     def calculate(self):
         for meta in self.meta_list:
+            meta["field_type"] = self.determine_type(meta.get("type_stat"))
+
+            if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT:
+                del meta.get("statistics")["unique"]
+
+            if meta.get("field_type") == Constants.FIELD_TYPE_STRING:
+                del meta.get("statistics")["basic"]
+
             for _ in meta.get("statistics"):
                 meta.get("statistics").get(_).calculate()
+
+    @staticmethod
+    def determine_type(type_stat: Dict) -> str:
+        ft_int = type_stat.get(Constants.FIELD_TYPE_INT)
+        ft_float = type_stat.get(Constants.FIELD_TYPE_FLOAT)
+        ft_string = type_stat.get(Constants.FIELD_TYPE_STRING)
+
+        if ft_int > ft_float and ft_int > ft_string:
+            return Constants.FIELD_TYPE_INT
+        if ft_float > ft_int and ft_float > ft_string:
+            return Constants.FIELD_TYPE_FLOAT
+        if ft_string > ft_int and ft_string > ft_float:
+            return Constants.FIELD_TYPE_STRING
+        return Constants.FIELD_TYPE_NULL
 
     def get_meta_list(self) -> List[dict]:
         for meta in self.meta_list:
             for _ in meta.get("statistics").keys():
-                meta.get("statistics")[_] = str(meta.get("statistics").get(_))
+                meta.get("statistics")[_] = meta.get("statistics").get(_).to_dict()
         return self.meta_list

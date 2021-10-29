@@ -19,15 +19,25 @@ class PySFTPClient(object):
         except paramiko.ssh_exception.AuthenticationException:
             raise PySFTPAuthException
 
-    def open(self, filename, option="r",) -> paramiko.SFTPFile:
+    def open(self, filename, option="r", ) -> paramiko.SFTPFile:
         return self.sftp.open(filename, option)
 
-    def rename(self, src, dst):
+    def rename(self, src, dst) -> None:
         self.sftp.rename(src, dst)
 
-    def close(self):
+    def close(self) -> None:
         self.sftp.close()
         self.transport.close()
+
+    def remove(self, filename) -> None:
+        self.sftp.remove(filename)
+
+    def is_exist(self, filename) -> bool:
+        try:
+            self.sftp.stat(filename)
+            return True
+        except FileNotFoundError:
+            return False
 
 
 if __name__ == '__main__':

@@ -14,8 +14,8 @@ from dataanalyzer.util.Singleton import Singleton
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 
 
-class DataAnalyzerManager(object, metaclass=Singleton):
-    # class : DataAnalyzerManager
+class DataAnalyzerChiefManager(object, metaclass=Singleton):
+    # class : DataAnalyzerChiefManager
     def __init__(self):
         self.logger = Common.LOGGER.get_logger()
         self.mrms_sftp_manager: SFTPClientManager = None
@@ -24,6 +24,7 @@ class DataAnalyzerManager(object, metaclass=Singleton):
         self.http_client: http.client.HTTPConnection = http.client.HTTPConnection(
             Constants.MRMS_SVC, Constants.MRMS_REST_PORT)
         self.loader: DataLoader = None
+        self.job_type = Constants.JOB_TYPE_CHIEF
 
     def initialize(self, job_id: str, job_idx: str):
         self.mrms_sftp_manager = SFTPClientManager(
@@ -38,15 +39,15 @@ class DataAnalyzerManager(object, metaclass=Singleton):
         self.logger.info(str(self.job_info))
 
         self.loader = DataLoaderFactory.make_data_loader(
-            self.job_info, self.storage_sftp_manager.get_client(),
+            self.job_type, self.job_info, job_idx,
+            self.storage_sftp_manager.get_client(),
             self.mrms_sftp_manager.get_client()
         )
         self.logger.info("DataAnalyzerManager initialized.")
 
-    @staticmethod
-    def load_job_info(job_id: str, job_idx: str):
-        filename = Constants.DIR_DATA_ANALYZER + "/DA_{}_{}.job".format(job_id, job_idx)
-        return DAJobInfo(filename)
+    def load_job_info(self, job_id: str, job_idx: str):
+        filename = Constants.DIR_DIVISION_PATH + "/DA_{}.job".format(job_id, job_idx)
+        return DAJobInfo(self.mrms_sftp_manager.get_client(), filename)
 
     def get_job_info(self):
         return self.job_info
@@ -72,4 +73,4 @@ class DataAnalyzerManager(object, metaclass=Singleton):
 
 
 if __name__ == '__main__':
-    dam = DataAnalyzerManager("ID", "0")
+    dam = DataAnalyzerChiefManager("ID", "0")
