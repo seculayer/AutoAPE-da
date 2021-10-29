@@ -58,3 +58,9 @@ class TableDatasetMeta(DatasetMeta):
         for meta in self.meta_list:
             for _ in meta.get("statistics"):
                 meta.get("statistics").get(_).calculate()
+
+    def get_meta_list(self) -> List[dict]:
+        for meta in self.meta_list:
+            for _ in meta.get("statistics").keys():
+                meta.get("statistics")[_] = str(meta.get("statistics").get(_))
+        return self.meta_list

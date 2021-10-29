@@ -10,9 +10,10 @@ from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
 
 
 class DataLoader(object):
-    def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient):
+    def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
         self.job_info: DAJobInfo = job_info
         self.sftp_client: PySFTPClient = sftp_client
+        self.mrms_sftp_client: PySFTPClient = mrms_sftp_client
         self.dataset_meta: DatasetMeta = DatasetMeta()
         self.num_worker: int = 1
 

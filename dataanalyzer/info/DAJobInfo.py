@@ -12,7 +12,7 @@ class DAJobInfo(JobInfo):
     def __init__(self, filename: str):
         JobInfo.__init__(self, filename)
 
-        self.job_id = self.job_info_dict.get("job_id")
+        self.job_id = self.job_info_dict.get("dataset_id")
         self.dataset_format = self.job_info_dict.get("dataset_format")
         self.file_path = self.job_info_dict.get("format_json").get("file_path")
 
@@ -33,3 +33,6 @@ class DAJobInfo(JobInfo):
 
     def __str__(self) -> str:
         return "DataAnalyzerJobInfo = {}".format(self.job_info_dict)
+
+    def get_job_id(self) -> str:
+        return self.job_id

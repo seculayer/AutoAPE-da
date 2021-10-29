@@ -58,3 +58,6 @@ class DataDistributor(object):
                 self.current_worker_n += 1
                 if self.current_worker_n < self.num_worker:
                     self.writer = self.open()
+
+    def get_file_list(self):
+        return self.filename_list

@@ -3,6 +3,7 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import json
+from typing import Dict
 
 from dataanalyzer.analyzer.TableDatasetMeta import TableDatasetMeta
 from dataanalyzer.common.Constants import Constants
@@ -14,19 +15,20 @@ from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 
 class DataLoaderTable(DataLoader):
     def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
-        DataLoader.__init__(self, job_info, sftp_client)
+        DataLoader.__init__(self, job_info, sftp_client, mrms_sftp_client)
         self.num_worker = self.determine_n_workers(self.job_info.get_instances())
         self.data_dist = DataDistributor(job_info, self.num_worker)
         self.data_dist.initialize(mrms_sftp_client)
 
-    def determine_n_workers(self, instances):
-        n_workers = int(self.job_info.get_instances() / Constants.DISTRIBUTE_INSTANCES)
-        if self.job_info.get_instances() % Constants.DISTRIBUTE_INSTANCES == 0:
+    @staticmethod
+    def determine_n_workers(instances):
+        n_workers = int(instances / Constants.DISTRIBUTE_INSTANCES)
+        if instances % Constants.DISTRIBUTE_INSTANCES == 0:
             return n_workers
         else:
             return n_workers + 1
 
-    def load(self):
+    def load(self) -> None:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
         self.dataset_meta: TableDatasetMeta = TableDatasetMeta()
         self.dataset_meta.initialize(self.job_info)
@@ -39,9 +41,17 @@ class DataLoaderTable(DataLoader):
             self.data_dist.write(json_data)
 
         self.dataset_meta.calculate()
-
-        # for meta in self.dataset_meta.meta_list:
-        #     for _ in meta.get("statistics").keys():
-        #         print(str(meta.get("statistics").get(_)))
         f.close()
         self.data_dist.close()
+        self.write_meta()
+
+    def generate_meta(self) -> Dict:
+        return {
+            "file_list": self.data_dist.get_file_list(),
+            "meta": self.dataset_meta.get_meta_list()
+        }
+
+    def write_meta(self) -> None:
+        f = self.mrms_sftp_client.open("{}/DA_CHIEF_{}.meta".format(Constants.DIR_DIVISION_PATH, self.job_info.get_job_id()), "w")
+        f.write(json.dumps(self.generate_meta(), indent=2))
+        f.close()
