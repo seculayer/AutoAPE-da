@@ -67,6 +67,9 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         response = self.http_client.getresponse()
         self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
 
+    def calculate_global_meta(self):
+        self.loader.global_meta()
+
     def terminate(self):
         self.mrms_sftp_manager.close()
         self.storage_sftp_manager.close()

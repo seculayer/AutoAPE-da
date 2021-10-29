@@ -55,3 +55,6 @@ class DataLoaderTable(DataLoader):
         f = self.mrms_sftp_client.open("{}/DA_CHIEF_{}.meta".format(Constants.DIR_DIVISION_PATH, self.job_info.get_job_id()), "w")
         f.write(json.dumps(self.generate_meta(), indent=2))
         f.close()
+
+    def global_meta(self):
+        self.dataset_meta.get_meta_list()

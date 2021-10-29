@@ -20,5 +20,11 @@ class DataLoader(object):
     def load(self):
         raise NotImplementedError
 
-    def get_num_worker(self):
+    def get_num_worker(self) -> int:
         return self.num_worker
+
+    def get_meta(self) -> DatasetMeta:
+        return self.dataset_meta
+
+    def global_meta(self):
+        raise NotImplementedError
