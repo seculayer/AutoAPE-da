@@ -11,7 +11,9 @@ from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 
 class DataLoaderFactory(object):
     @staticmethod
-    def make_data_loader(job_info: DAJobInfo, sftp_client: PySFTPClient) -> DataLoader:
+    def make_data_loader(job_info: DAJobInfo, sftp_client: PySFTPClient,
+                         mrms_sftp_client: PySFTPClient) -> DataLoader:
         return {
-            Constants.DATASET_FORMAT_TABLE: DataLoaderTable(job_info, sftp_client)
+            Constants.DATASET_FORMAT_TABLE: DataLoaderTable(
+                job_info, sftp_client, mrms_sftp_client)
         }.get(job_info.get_dataset_format())

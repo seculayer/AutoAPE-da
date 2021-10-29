@@ -22,6 +22,9 @@ class PySFTPClient(object):
     def open(self, filename, option="r",) -> paramiko.SFTPFile:
         return self.sftp.open(filename, option)
 
+    def rename(self, src, dst):
+        self.sftp.rename(src, dst)
+
     def close(self):
         self.sftp.close()
         self.transport.close()

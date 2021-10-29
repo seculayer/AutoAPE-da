@@ -13,13 +13,13 @@ from dataanalyzer.util.Singleton import Singleton
 
 
 # class : DataAnalyzer
-class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
-    def __init__(self, job_id: str):
+class DataAnalyzerWorker(KubePodSafetyTermThread, metaclass=Singleton):
+    def __init__(self, job_id: str, job_idx: str):
         KubePodSafetyTermThread.__init__(self)
         self.logger = Common.LOGGER.get_logger()
 
         self.da_manager = DataAnalyzerManager()
-        self.da_manager.initialize(job_id, "0")
+        self.da_manager.initialize(job_id, job_idx)
 
         self.logger.info("DataAnalyzer Initialized!")
 
@@ -38,7 +38,8 @@ if __name__ == '__main__':
     import sys
 
     j_id = sys.argv[1]
+    j_idx = sys.argv[2]
 
-    data_analyzer = DataAnalyzerChief(j_id)
+    data_analyzer = DataAnalyzerWorker(j_id, j_idx)
     data_analyzer.start()
     data_analyzer.join()

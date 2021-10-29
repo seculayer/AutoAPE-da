@@ -21,8 +21,9 @@ class Constants(metaclass=Singleton):
     # Directories
     DIR_DATA_ROOT = _CONFIG.get("dir_data_root")
     DIR_DATA_ANALYZER = DIR_DATA_ROOT + _CONFIG.get("dir_data_analyzer")
+    DIR_DIVISION_PATH = "/eyeCloudAI/data/processing/ape/division"
 
-    # Logs
+# Logs
     DIR_LOG = _CONFIG.get("dir_log", "./logs")
     LOG_LEVEL = _CONFIG.get("log_level", "INFO")
     LOG_NAME = _CONFIG.get("log_name", "DataAnalyzer")
@@ -47,7 +48,8 @@ class Constants(metaclass=Singleton):
     FIELD_TYPE_FLOAT = "float"
     FIELD_TYPE_STRING = "string"
 
-    DISTRIBUTE_INSTANCES = 5000
+    DISTRIBUTE_INSTANCES = 10000
+
 
 if __name__ == '__main__':
     print(Constants.DIR_DATA_ROOT)

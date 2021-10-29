@@ -24,8 +24,11 @@ class SFTPClientManager(object):
 
         self.logger.info("initialized service - [{}] SFTP Client Initialized.".format(service))
 
-    def get_client(self):
+    def get_client(self) -> PySFTPClient:
         return self.sftp_client
 
-    def close(self):
+    def rename(self, src, dst) -> None:
+        self.sftp_client.rename(src, dst)
+
+    def close(self) -> None:
         self.sftp_client.close()

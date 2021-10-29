@@ -37,7 +37,10 @@ class DataAnalyzerManager(object, metaclass=Singleton):
         self.job_info = self.load_job_info(job_id, job_idx)
         self.logger.info(str(self.job_info))
 
-        self.loader = DataLoaderFactory.make_data_loader(self.job_info, self.storage_sftp_manager.get_client())
+        self.loader = DataLoaderFactory.make_data_loader(
+            self.job_info, self.storage_sftp_manager.get_client(),
+            self.mrms_sftp_manager.get_client()
+        )
         self.logger.info("DataAnalyzerManager initialized.")
 
     @staticmethod
@@ -50,6 +53,9 @@ class DataAnalyzerManager(object, metaclass=Singleton):
 
     def get_storage_sftp_client(self) -> PySFTPClient:
         return self.storage_sftp_manager.get_client()
+
+    def get_mrms_sftp_client(self):
+        return self.mrms_sftp_manager.get_client()
 
     def data_loader(self):
         self.loader.load()
