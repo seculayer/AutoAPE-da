@@ -29,9 +29,15 @@ class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
         # request to mrms for worker create
         self.da_manager.request_worker_create()
 
-        # while not self._is_exit():
-        #     time.sleep(1)
+        # monitoring worker end
+        while not self.da_manager.monitor_worker_end():
+            time.sleep(1)
 
+        # calculate to global meta feature
+        self.da_manager.calculate_global_meta()
+
+        # bye
+        self.da_manager.request_da_terminate()
         self.da_manager.terminate()
         self.logger.info("DataAnalyzer terminate!")
 

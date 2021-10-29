@@ -63,16 +63,26 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
 
     def request_worker_create(self):
         self.http_client.request("GET", "/mrms/request_da_worker?id={}&num_worker={}".format(
-            self.job_info.job_id, self.loader.get_num_worker()))
+            self.job_info.get_job_id(), self.loader.get_num_worker()))
         response = self.http_client.getresponse()
         self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+
+    def monitor_worker_end(self) -> bool:
+        return self.loader.worker_monitor()
 
     def calculate_global_meta(self):
         self.loader.global_meta()
 
+    def request_da_terminate(self):
+        self.http_client.request("GET", "/mrms/data_anals_info?id={}".format(
+            self.job_info.get_job_id()))
+        response = self.http_client.getresponse()
+        self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+
     def terminate(self):
         self.mrms_sftp_manager.close()
         self.storage_sftp_manager.close()
+        self.http_client.close()
 
 
 if __name__ == '__main__':

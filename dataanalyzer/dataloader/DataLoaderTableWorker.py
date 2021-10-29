@@ -39,18 +39,13 @@ class DataLoaderTableWorker(DataLoader):
 
         self.dataset_meta.calculate()
         f.close()
-        self.write_meta()
+        self.write_meta("{}/DA_WORKER_{}_{}.meta".format(
+            Constants.DIR_DIVISION_PATH, self.job_info.get_job_id(), self.worker_idx))
 
     def generate_meta(self) -> Dict:
         return {
             "meta": self.dataset_meta.get_meta_list()
         }
-
-    def write_meta(self) -> None:
-        f = self.mrms_sftp_client.open("{}/DA_WORKER_{}_{}.meta".format(
-            Constants.DIR_DIVISION_PATH, self.job_info.get_job_id(), self.worker_idx), "w")
-        f.write(json.dumps(self.generate_meta(), indent=2))
-        f.close()
 
     def global_meta(self):
         raise NotImplementedError

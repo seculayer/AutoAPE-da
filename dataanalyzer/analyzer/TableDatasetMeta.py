@@ -7,6 +7,7 @@ from typing import Dict, List
 from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
 from dataanalyzer.analyzer.table.categorical.Unique import Unique
 from dataanalyzer.analyzer.table.numeric.BasicStatistics import BasicStatistics
+from dataanalyzer.analyzer.table.numeric.GlobalStatistics import GlobalStatistics
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
@@ -14,6 +15,7 @@ from dataanalyzer.info.DAJobInfo import DAJobInfo
 class TableDatasetMeta(DatasetMeta):
     COMMON_KEYS = ["unique"]
     NUMERIC_KEYS = ["basic"]
+    GLOBAL_KEYS = ["global"]
 
     def __init__(self):
         DatasetMeta.__init__(self)
@@ -21,7 +23,7 @@ class TableDatasetMeta(DatasetMeta):
         self.meta_list: List[Dict] = list()
         self.field_list = list()
 
-    def initialize(self, job_info: DAJobInfo):
+    def initialize(self, job_info: DAJobInfo) -> None:
         self.field_list = job_info.get_field_list()
 
         for idx, field_nm in enumerate(self.field_list):
@@ -43,7 +45,7 @@ class TableDatasetMeta(DatasetMeta):
                 }
             )
 
-    def apply(self, data):
+    def apply(self, data) -> None:
         for idx, field_nm in enumerate(self.field_list):
             result, f_type = DatasetMeta._field_type(data.get(field_nm))
             self.meta_list[idx].get("type_stat")[f_type] += 1
@@ -57,7 +59,7 @@ class TableDatasetMeta(DatasetMeta):
             for _ in self.COMMON_KEYS:
                 self.meta_list[idx].get("statistics").get(_).apply(result)
 
-    def calculate(self):
+    def calculate(self) -> None:
         for meta in self.meta_list:
             meta["field_type"] = self.determine_type(meta.get("type_stat"))
 
@@ -69,6 +71,10 @@ class TableDatasetMeta(DatasetMeta):
 
             for _ in meta.get("statistics"):
                 meta.get("statistics").get(_).calculate()
+
+            # end
+            for _ in meta.get("statistics").keys():
+                meta.get("statistics")[_] = meta.get("statistics").get(_).to_dict()
 
     @staticmethod
     def determine_type(type_stat: Dict) -> str:
@@ -85,7 +91,15 @@ class TableDatasetMeta(DatasetMeta):
         return Constants.FIELD_TYPE_NULL
 
     def get_meta_list(self) -> List[dict]:
-        for meta in self.meta_list:
-            for _ in meta.get("statistics").keys():
-                meta.get("statistics")[_] = meta.get("statistics").get(_).to_dict()
         return self.meta_list
+
+    def calculate_global_meta(self, local_meta_list: List[List[Dict]]) -> None:
+        # make global
+        for idx, meta in enumerate(self.meta_list):
+            ft = meta.get("field_type")
+            if ft is Constants.FIELD_TYPE_INT or ft is Constants.FIELD_TYPE_FLOAT:
+                gs = GlobalStatistics()
+                for local_meta in local_meta_list:
+                    gs.apply(local_meta[idx].get("statistics").get("local").get("local_var"))
+                gs.calculate()
+                meta.get("statistics")["global"] = gs.to_dict()

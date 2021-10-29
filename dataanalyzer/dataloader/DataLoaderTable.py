@@ -3,7 +3,7 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import json
-from typing import Dict
+from typing import Dict, List
 
 from dataanalyzer.analyzer.TableDatasetMeta import TableDatasetMeta
 from dataanalyzer.common.Constants import Constants
@@ -43,7 +43,7 @@ class DataLoaderTable(DataLoader):
         self.dataset_meta.calculate()
         f.close()
         self.data_dist.close()
-        self.write_meta()
+        self.write_meta("{}/DA_CHIEF_{}.meta".format(Constants.DIR_DIVISION_PATH, self.job_info.get_job_id()))
 
     def generate_meta(self) -> Dict:
         return {
@@ -51,10 +51,11 @@ class DataLoaderTable(DataLoader):
             "meta": self.dataset_meta.get_meta_list()
         }
 
-    def write_meta(self) -> None:
-        f = self.mrms_sftp_client.open("{}/DA_CHIEF_{}.meta".format(Constants.DIR_DIVISION_PATH, self.job_info.get_job_id()), "w")
-        f.write(json.dumps(self.generate_meta(), indent=2))
-        f.close()
+    def global_meta(self) -> None:
+        # load local meta info
+        local_meta_list: List = list()
+        for idx in range(self.get_num_worker()):
+            local_meta_list.append(self.load_local_meta(idx))
 
-    def global_meta(self):
-        self.dataset_meta.get_meta_list()
+        self.dataset_meta.calculate_global_meta(local_meta_list)
+        self.write_meta("{}/DA_META_{}.info".format(Constants.DIR_DIVISION_PATH, self.job_info.get_job_id()))
