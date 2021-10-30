@@ -29,7 +29,7 @@ COPY --from=builder "$app/dist/dataanalyzer-1.0.0-py3-none-any.whl" \
         /eyeCloudAI/app/ape/da/dataanalyzer-1.0.0-py3-none-any.whl
 
 RUN pip3.7 install /eyeCloudAI/app/ape/da/dataanalyzer-1.0.0-py3-none-any.whl --no-dependencies  \
-    -t /eyeCloudAI/app/ape/da/lib \
+    -t /eyeCloudAI/app/ape/da/ \
     && rm /eyeCloudAI/app/ape/da/dataanalyzer-1.0.0-py3-none-any.whl
 
 RUN groupadd -g 1000 aiuser

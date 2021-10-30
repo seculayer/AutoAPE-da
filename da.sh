@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PYTHONPATH=PYTHONPATH:/eyeCloudAI/app/ape/da/lib
+export PYTHONPATH=PYTHONPATH:/eyeCloudAI/app/ape/da/lib:/eyeCloudAI/app/ape/da
 
 DATASET_ID=${1}
 WORKER_IDX=${3}
