@@ -74,7 +74,7 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         self.loader.global_meta()
 
     def request_da_terminate(self):
-        self.http_client.request("GET", "/mrms/data_anals_info?id={}".format(
+        self.http_client.request("GET", "/mrms/insert_data_anls_info?dataset_id={}".format(
             self.job_info.get_job_id()))
         response = self.http_client.getresponse()
         self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))

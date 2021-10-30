@@ -21,6 +21,7 @@ RUN mkdir -p /eyeCloudAI/app/ape/da
 WORKDIR /eyeCloudAI/app/ape/da
 
 COPY ./da.sh /eyeCloudAI/app/ape/da
+RUN chmod +x /eyeCloudAI/app/ape/da/da.sh
 
 COPY --from=builder "$app/lib" /eyeCloudAI/app/ape/da/lib
 
@@ -36,4 +37,4 @@ RUN useradd -r -u 1000 -g aiuser aiuser
 RUN chown -R aiuser:aiuser /eyeCloudAI
 USER aiuser
 
-CMD []
+CMD ["/eyeCloudAI/app/ape/da/da.sh", "0", "chief", "0"]
