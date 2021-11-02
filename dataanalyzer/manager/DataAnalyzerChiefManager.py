@@ -3,6 +3,7 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import http.client
+import json
 
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
@@ -79,6 +80,12 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
             self.job_info.get_job_id()))
         response = self.http_client.getresponse()
         self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+
+    def request_update_dataset_status(self, job_id, status):
+        body_data = {
+            "dataset_id": job_id, "status_cd": status
+        }
+        self.http_client.request("POST", "/mrms/update_dataset_status", body=json.dumps(body_data))
 
     def terminate(self):
         self.mrms_sftp_manager.close()

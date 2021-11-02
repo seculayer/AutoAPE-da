@@ -40,6 +40,9 @@ class Constants(metaclass=Singleton):
     # DATASET FORMAT
     DATASET_FORMAT_TABLE = "1"
 
+    # DATASET STATUS
+    STATUS_DATASET_COMPLETE = "7"
+
     # TABLE FIELD TYPE
     FIELD_TYPE_NULL = "null"
     FIELD_TYPE_INT = "int"

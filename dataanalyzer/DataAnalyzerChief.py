@@ -7,6 +7,7 @@
 import time
 
 from dataanalyzer.common.Common import Common
+from dataanalyzer.common.Constants import Constants
 from dataanalyzer.manager.DataAnalyzerChiefManager import DataAnalyzerChiefManager
 from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
 from dataanalyzer.util.Singleton import Singleton
@@ -20,6 +21,7 @@ class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
 
         self.da_manager = DataAnalyzerChiefManager()
         self.da_manager.initialize(job_id, "0")
+        self.job_id = job_id
 
         self.logger.info("DataAnalyzer Initialized!")
 
@@ -35,6 +37,9 @@ class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
 
         # calculate to global meta feature
         self.da_manager.calculate_global_meta()
+
+        # update status
+        self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_DATASET_COMPLETE)
 
         # bye
         self.da_manager.request_da_terminate()
