@@ -38,11 +38,10 @@ class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
         # calculate to global meta feature
         self.da_manager.calculate_global_meta()
 
-        # update status
-        self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_DATASET_COMPLETE)
-
         # bye
         self.da_manager.request_da_terminate()
+        time.sleep(1)
+        self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_DATASET_COMPLETE)
         self.da_manager.terminate()
         self.logger.info("DataAnalyzer terminate!")
 
