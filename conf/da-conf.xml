@@ -29,11 +29,13 @@
     <!-- hosts -->
     <property>
         <name>storage_svc</name>
-        <value>ape-storage-svc</value>
+<!--        <value>ape-storage-svc</value>-->
+        <value>10.1.35.72</value>
     </property>
     <property>
         <name>storage_sftp_port</name>
-        <value>10122</value>
+<!--        <value>10122</value>-->
+        <value>22</value>
     </property>
     <property>
         <name>mrms_svc</name>
@@ -49,10 +51,10 @@
     </property>
     <property>
         <name>ssh_username</name>
-        <value>[@sshusername]</value>
+        <value>HE12RmzKHQtH3bL7tTRqCg==</value>
     </property>
     <property>
         <name>ssh_password</name>
-        <value>[@sshpassword]</value>
+        <value>jTf6XrqcYX1SAhv9JUPq+w==</value>
     </property>
 </configuration>

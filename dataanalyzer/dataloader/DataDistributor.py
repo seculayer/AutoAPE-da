@@ -25,6 +25,7 @@ class DataDistributor(object):
         self.current_worker_n: int = 0
         self.writer: paramiko.SFTPFile = None
         self.filename_list: List[str] = list()
+        self.fileline_list: List[int] = list()
 
     def initialize(self, client):
         self.mrms_sftp_client = client
@@ -61,5 +62,14 @@ class DataDistributor(object):
                 if self.current_worker_n < self.num_worker:
                     self.writer = self.open()
 
+    def make_fileline_list(self):
+        for _ in range(self.num_worker):
+            self.fileline_list.append(self.max_rows)
+        for i in range(self.mod):
+            self.fileline_list[i] += 1
+
     def get_file_list(self):
         return self.filename_list
+
+    def get_fileline_list(self):
+        return self.fileline_list

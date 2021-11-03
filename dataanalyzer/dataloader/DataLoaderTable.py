@@ -40,6 +40,8 @@ class DataLoaderTable(DataLoader):
             self.dataset_meta.apply(json_data)
             self.data_dist.write(json_data)
 
+        self.data_dist.make_fileline_list()
+
         self.dataset_meta.calculate()
         f.close()
         self.data_dist.close()
@@ -48,6 +50,7 @@ class DataLoaderTable(DataLoader):
     def generate_meta(self) -> Dict:
         return {
             "file_list": self.data_dist.get_file_list(),
+            "file_num_line": self.data_dist.get_fileline_list(),
             "meta": self.dataset_meta.get_meta_list()
         }
 
