@@ -87,6 +87,13 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         }
         self.http_client.request("POST", "/mrms/update_dataset_status", body=json.dumps(body_data))
 
+    def request_delete_da_job(self, job_id):
+        self.http_client.request(
+            "GET", "/mrms/delete_dataset_job?dataset_id={}".format(job_id)
+        )
+        response = self.http_client.getresponse()
+        self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+
     def terminate(self):
         self.mrms_sftp_manager.close()
         self.storage_sftp_manager.close()
