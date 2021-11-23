@@ -16,6 +16,7 @@ class TableDatasetMeta(DatasetMeta):
     COMMON_KEYS = ["unique"]
     NUMERIC_KEYS = ["basic"]
     GLOBAL_KEYS = ["global"]
+    STRING_KEYS = ["word"]
 
     def __init__(self):
         DatasetMeta.__init__(self)
@@ -54,6 +55,11 @@ class TableDatasetMeta(DatasetMeta):
             if f_type is Constants.FIELD_TYPE_INT or f_type is Constants.FIELD_TYPE_FLOAT:
                 for _ in self.NUMERIC_KEYS:
                     self.meta_list[idx].get("statistics").get(_).apply(result)
+
+            # string
+            if f_type is Constants.FIELD_TYPE_STRING:
+                for _ in self.STRING_KEYS:
+                    pass
 
             # common
             for _ in self.COMMON_KEYS:

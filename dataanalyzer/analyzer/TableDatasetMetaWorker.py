@@ -39,9 +39,10 @@ class TableDatasetMetaWorker(DatasetMeta):
             result, f_type = DatasetMeta._field_type(data.get(fd.get("field_nm")))
 
             # numeric
-            if f_type is Constants.FIELD_TYPE_INT or f_type is Constants.FIELD_TYPE_FLOAT:
-                for _key in self.LOCAL_KEYS:
-                    fd.get("statistics").get(_key).apply(result)
+            if fd.get("field_type") == Constants.FIELD_TYPE_INT or fd.get("field_type") == Constants.FIELD_TYPE_FLOAT:
+                if f_type is Constants.FIELD_TYPE_INT or f_type is Constants.FIELD_TYPE_FLOAT:
+                    for _key in self.LOCAL_KEYS:
+                        fd.get("statistics").get(_key).apply(result)
 
     def calculate(self):
         for meta in self.meta_list:
