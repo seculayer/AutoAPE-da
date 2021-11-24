@@ -8,6 +8,7 @@ from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
 from dataanalyzer.analyzer.table.categorical.Unique import Unique
 from dataanalyzer.analyzer.table.numeric.BasicStatistics import BasicStatistics
 from dataanalyzer.analyzer.table.numeric.GlobalStatistics import GlobalStatistics
+from dataanalyzer.analyzer.table.string.Word import Word
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
@@ -20,8 +21,6 @@ class TableDatasetMeta(DatasetMeta):
 
     def __init__(self):
         DatasetMeta.__init__(self)
-
-        self.meta_list: List[Dict] = list()
         self.field_list = list()
 
     def initialize(self, job_info: DAJobInfo) -> None:
@@ -41,7 +40,8 @@ class TableDatasetMeta(DatasetMeta):
                     },
                     "statistics": {
                         "basic": BasicStatistics(),
-                        "unique": Unique()
+                        "unique": Unique(),
+                        "word": Word(),
                     }
                 }
             )
@@ -59,7 +59,7 @@ class TableDatasetMeta(DatasetMeta):
             # string
             if f_type is Constants.FIELD_TYPE_STRING:
                 for _ in self.STRING_KEYS:
-                    pass
+                    self.meta_list[idx].get("statistics").get(_).apply(result)
 
             # common
             for _ in self.COMMON_KEYS:
@@ -68,6 +68,11 @@ class TableDatasetMeta(DatasetMeta):
     def calculate(self) -> None:
         for meta in self.meta_list:
             meta["field_type"] = self.determine_type(meta.get("type_stat"))
+
+            if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT \
+                    or meta.get("field_type") == Constants.FIELD_TYPE_INT:
+                for _ in self.STRING_KEYS:
+                    del meta.get("statistics")[_]
 
             if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT:
                 del meta.get("statistics")["unique"]

@@ -2,12 +2,15 @@
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
+from typing import List, Dict
+
 from dataanalyzer.common.Constants import Constants
 
 
 class DatasetMeta(object):
     def __init__(self):
         self.n_rows = 0
+        self.meta_list: List[Dict] = list()
 
     def initialize(self, **kwargs):
         raise NotImplementedError
