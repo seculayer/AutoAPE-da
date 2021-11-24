@@ -4,6 +4,7 @@
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import http.client
 import json
+import requests as rq
 
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
@@ -22,10 +23,9 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         self.mrms_sftp_manager: SFTPClientManager = None
         self.storage_sftp_manager: SFTPClientManager = None
         self.job_info: DAJobInfo = None
-        self.http_client: http.client.HTTPConnection = http.client.HTTPConnection(
-            Constants.MRMS_SVC, Constants.MRMS_REST_PORT)
         self.loader: DataLoader = None
         self.job_type = Constants.JOB_TYPE_CHIEF
+        self.rest_root_url = f"http://{Constants.MRMS_SVC}:{Constants.MRMS_REST_PORT}"
 
     def initialize(self, job_id: str, job_idx: str):
         self.mrms_sftp_manager = SFTPClientManager(
@@ -64,10 +64,10 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         self.loader.load()
 
     def request_worker_create(self):
-        self.http_client.request("GET", "/mrms/request_da_worker?id={}&num_worker={}".format(
-            self.job_info.get_job_id(), self.loader.get_num_worker()))
-        response = self.http_client.getresponse()
-        self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+        response = rq.get("{}/mrms/request_da_worker?id={}&num_worker={}".format(
+            self.rest_root_url, self.job_info.get_job_id(), self.loader.get_num_worker())
+        )
+        self.logger.info("create da worker : {} {} {}".format(response.status_code, response.reason, response.text))
 
     def monitor_worker_end(self) -> bool:
         return self.loader.worker_monitor()
@@ -76,28 +76,23 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         self.loader.global_meta()
 
     def request_da_terminate(self):
-        self.http_client.request("GET", "/mrms/insert_data_anls_info?dataset_id={}".format(
-            self.job_info.get_job_id()))
-        response = self.http_client.getresponse()
-        self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+        response = rq.get("{}/mrms/insert_data_anls_info?dataset_id={}".format(
+            self.rest_root_url, self.job_info.get_job_id())
+        )
+        self.logger.info("insert data anls info : {} {} {}".format(response.status_code, response.reason, response.text))
 
     def request_update_dataset_status(self, job_id, status):
         body_data = {
             "dataset_id": job_id, "status_cd": status
         }
-        self.http_client.request("POST", "/mrms/update_dataset_status", body=json.dumps(body_data))
-
-    def request_delete_da_job(self, job_id):
-        self.http_client.request(
-            "GET", "/mrms/delete_dataset_job?dataset_id={}".format(job_id)
-        )
-        response = self.http_client.getresponse()
-        self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+        response = rq.post("{}/mrms/update_dataset_status".format(self.rest_root_url),
+                           json=body_data
+                           )
+        self.logger.info("update dataset status : {} {} {}".format(response.status_code, response.reason, response.text))
 
     def terminate(self):
         self.mrms_sftp_manager.close()
         self.storage_sftp_manager.close()
-        self.http_client.close()
 
 
 if __name__ == '__main__':

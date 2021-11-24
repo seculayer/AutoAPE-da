@@ -41,7 +41,7 @@ class Constants(metaclass=Singleton):
     DATASET_FORMAT_TABLE = "1"
 
     # DATASET STATUS
-    STATUS_DATASET_COMPLETE = "7"
+    STATUS_DA_RM_REQ = "9"
 
     # TABLE FIELD TYPE
     FIELD_TYPE_NULL = "null"
@@ -51,7 +51,7 @@ class Constants(metaclass=Singleton):
 
     JOB_TYPE_CHIEF = "chief"
     JOB_TYPE_WORKER = "worker"
-    DISTRIBUTE_INSTANCES = 10000
+    DISTRIBUTE_INSTANCES = int(_CONFIG.get("distribute_instances", "100000"))
 
 
 if __name__ == '__main__':

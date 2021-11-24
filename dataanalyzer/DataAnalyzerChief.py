@@ -40,10 +40,8 @@ class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
 
         # bye
         self.da_manager.request_da_terminate()
-        time.sleep(1)
-        self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_DATASET_COMPLETE)
-        self.da_manager.request_delete_da_job(self.job_id)
         self.da_manager.terminate()
+        self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_DA_RM_REQ)
         self.logger.info("DataAnalyzer terminate!")
 
 
