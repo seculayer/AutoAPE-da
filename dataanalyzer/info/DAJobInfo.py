@@ -36,3 +36,6 @@ class DAJobInfo(JobInfo):
 
     def get_job_id(self) -> str:
         return self.job_id
+
+    def get_features(self):
+        return int(self.job_info_dict.get("n_cols"))

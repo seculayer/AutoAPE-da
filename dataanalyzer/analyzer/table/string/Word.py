@@ -26,4 +26,4 @@ class Word(Analyzer):
         pass
 
     def to_dict(self) -> Dict:
-        return self.word_dict
+        return {"word": self.word_dict}

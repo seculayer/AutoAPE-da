@@ -5,8 +5,6 @@
 from typing import Dict, List
 
 from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
-from dataanalyzer.analyzer.table.categorical.Unique import Unique
-from dataanalyzer.analyzer.table.numeric.BasicStatistics import BasicStatistics
 from dataanalyzer.analyzer.table.numeric.LocalStatistics import LocalStatistics
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo

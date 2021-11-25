@@ -5,7 +5,7 @@
 import json
 from typing import Dict, List
 
-from dataanalyzer.analyzer.TableDatasetMeta import TableDatasetMeta
+from dataanalyzer.analyzer.TableDatasetMetaChief import TableDatasetMetaChief
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.dataloader.DataDistributor import DataDistributor
 from dataanalyzer.dataloader.DataLoader import DataLoader
@@ -30,7 +30,7 @@ class DataLoaderTable(DataLoader):
 
     def load(self) -> None:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
-        self.dataset_meta: TableDatasetMeta = TableDatasetMeta()
+        self.dataset_meta: TableDatasetMetaChief = TableDatasetMetaChief()
         self.dataset_meta.initialize(self.job_info)
         while True:
             line = f.readline()
@@ -51,7 +51,8 @@ class DataLoaderTable(DataLoader):
         return {
             "file_list": self.data_dist.get_file_list(),
             "file_num_line": self.data_dist.get_fileline_list(),
-            "meta": self.dataset_meta.get_meta_list()
+            "meta": self.dataset_meta.get_meta_list(),
+            "dataset_meta": self.dataset_meta.get_meta_dataset()
         }
 
     def global_meta(self) -> None:

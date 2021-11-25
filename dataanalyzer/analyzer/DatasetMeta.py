@@ -10,6 +10,7 @@ from dataanalyzer.common.Constants import Constants
 class DatasetMeta(object):
     def __init__(self):
         self.n_rows = 0
+        self.meta_dataset = dict()
         self.meta_list: List[Dict] = list()
 
     def initialize(self, **kwargs):

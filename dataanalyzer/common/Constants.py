@@ -53,6 +53,9 @@ class Constants(metaclass=Singleton):
     JOB_TYPE_WORKER = "worker"
     DISTRIBUTE_INSTANCES = int(_CONFIG.get("distribute_instances", "100000"))
 
+    # FIELD TAG
+    TAG_CATEGORY = "Categorical"
+
 
 if __name__ == '__main__':
     print(Constants.DIR_DATA_ROOT)

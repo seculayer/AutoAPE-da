@@ -5,11 +5,10 @@
 import json
 from typing import Dict
 
-from dataanalyzer.analyzer.TableDatasetMeta import TableDatasetMeta
+from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
-from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
 
 
 class DataLoader(object):
@@ -52,5 +51,6 @@ class DataLoader(object):
 
     def write_meta(self, filename) -> None:
         f = self.mrms_sftp_client.open(filename, "w")
+        print(self.generate_meta())
         f.write(json.dumps(self.generate_meta(), indent=2))
         f.close()

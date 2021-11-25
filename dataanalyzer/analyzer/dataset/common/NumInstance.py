@@ -5,16 +5,16 @@
 from dataanalyzer.analyzer.dataset.DatasetMetaAbstract import DatasetMetaAbstract
 
 
-class NumFeature(DatasetMetaAbstract):
+class NumInstance(DatasetMetaAbstract):
     def __init__(self):
         DatasetMetaAbstract.__init__(self)
-        self.features = 0
+        self.instance = 0
 
-    def initialize(self, features):
-        self.features = features
+    def initialize(self, instances):
+        self.instance = instances
 
     def apply(self, data):
-        self.features += 1
+        self.instance += 1
 
     def to_dict(self):
-        return {"features": self.features}
+        return {"instances": self.instance}

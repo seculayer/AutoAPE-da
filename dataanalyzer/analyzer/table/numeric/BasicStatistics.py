@@ -36,7 +36,9 @@ class BasicStatistics(Analyzer):
 
     def to_dict(self):
         return {
-            "min": self.min,
-            "max": self.max,
-            "mean": self.mean,
+            "basic": {
+                "min": self.min,
+                "max": self.max,
+                "mean": self.mean,
+            }
         }
