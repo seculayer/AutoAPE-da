@@ -2,8 +2,6 @@
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
-import http.client
-import json
 import requests as rq
 
 from dataanalyzer.common.Common import Common
