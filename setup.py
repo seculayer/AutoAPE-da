@@ -2,6 +2,10 @@
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
+
+# ----------------------------------------------------------------------------------------------
+# AutoML - DataAnalyzer Setup Script
+# ----------------------------------------------------------------------------------------------
 from typing import List
 
 from setuptools import setup, find_packages
@@ -49,4 +53,10 @@ class APEPythonSetup(object):
 
 
 if __name__ == '__main__':
+    print("    ____        __           ___                __                     ")
+    print("   / __ \____ _/ /_____ _   /   |  ____  ____ _/ /_  ______  ___  _____")
+    print("  / / / / __ `/ __/ __ `/  / /| | / __ \/ __ `/ / / / /_  / / _ \/ ___/")
+    print(" / /_/ / /_/ / /_/ /_/ /  / ___ |/ / / / /_/ / / /_/ / / /_/  __/ /    ")
+    print("/_____/\__,_/\__/\__,_/  /_/  |_/_/ /_/\__,_/_/\__, / /___/\___/_/     ")
+    print("                                              /____/                   ")
     APEPythonSetup().setup()
