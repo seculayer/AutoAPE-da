@@ -13,7 +13,7 @@ from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 
 
-class DataLoaderTable(DataLoader):
+class DataLoaderImage(DataLoader):
     def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
         DataLoader.__init__(self, job_info, sftp_client, mrms_sftp_client)
         self.num_worker = self.determine_n_workers(self.job_info.get_instances())
@@ -22,7 +22,7 @@ class DataLoaderTable(DataLoader):
 
     @staticmethod
     def determine_n_workers(instances):
-        n_workers = int(instances / Constants.DISTRIBUTE_INSTANCES_TABLE)
+        n_workers = int(instances / Constants.DISTRIBUTE_INSTANCES_IMAGE)
         if instances % Constants.DISTRIBUTE_INSTANCES_TABLE == 0:
             return n_workers
         else:
@@ -37,6 +37,8 @@ class DataLoaderTable(DataLoader):
             if not line:
                 break
             json_data = json.loads(line)
+
+
             self.dataset_meta.apply(json_data)
             self.data_dist.write(json_data)
 
