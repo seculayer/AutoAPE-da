@@ -38,7 +38,6 @@ class DataLoaderImage(DataLoader):
                 break
             json_data = json.loads(line)
 
-
             self.dataset_meta.apply(json_data)
             self.data_dist.write(json_data)
 

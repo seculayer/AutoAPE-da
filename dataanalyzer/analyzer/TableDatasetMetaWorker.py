@@ -16,21 +16,27 @@ class TableDatasetMetaWorker(DatasetMeta):
 
     def __init__(self):
         DatasetMeta.__init__(self)
-        self.meta_list: List[Dict] = list()
+        self.meta_func_list: List[Dict] = list()
 
     def initialize(self, meta_json: Dict, job_info: DAJobInfo):
         self.meta_list: List[Dict] = meta_json.get("meta", list())
 
-        for _ in self.meta_list:
-            if _.get("field_type") == Constants.FIELD_TYPE_INT or _.get("field_type") == Constants.FIELD_TYPE_FLOAT:
-                local_statistic = LocalStatistics()
-                local_statistic.initialize(
-                    job_info.get_instances(), float(_.get("statistics").get("basic").get("mean")))
-                _["statistics"] = {
-                    "local": local_statistic
-                }
-            else:
-                _["statistics"] = {}
+        for idx, _ in enumerate(self.meta_list):
+            self.meta_func_list.append(self._initialize_meta_functions(job_info, _))
+            _["statistics"] = dict()
+
+    @staticmethod
+    def _initialize_meta_functions(job_info: DAJobInfo, meta) -> Dict:
+        field_type = meta.get("field_type")
+        if field_type == Constants.FIELD_TYPE_INT or field_type == Constants.FIELD_TYPE_FLOAT:
+            local_statistic = LocalStatistics()
+            local_statistic.initialize(
+                job_info.get_instances(), float(meta.get("statistics").get("basic").get("mean")))
+            return {
+                "local": local_statistic,
+            }
+        else:
+            return {}
 
     def apply(self, data):
         for idx, fd in enumerate(self.meta_list):
@@ -40,17 +46,20 @@ class TableDatasetMetaWorker(DatasetMeta):
             if fd.get("field_type") == Constants.FIELD_TYPE_INT or fd.get("field_type") == Constants.FIELD_TYPE_FLOAT:
                 if f_type is Constants.FIELD_TYPE_INT or f_type is Constants.FIELD_TYPE_FLOAT:
                     for _key in self.LOCAL_KEYS:
-                        fd.get("statistics").get(_key).apply(result)
+                        self.meta_func_list[idx].get(_key).apply(result)
 
     def calculate(self):
-        for meta in self.meta_list:
+        for idx, meta in enumerate(self.meta_list):
             if meta.get("field_type") == Constants.FIELD_TYPE_INT or \
                     meta.get("field_type") == Constants.FIELD_TYPE_FLOAT:
                 for _key in self.LOCAL_KEYS:
-                    meta.get("statistics").get(_key).calculate()
+                    self.meta_func_list[idx].get(_key).calculate()
 
     def get_meta_list(self) -> List[dict]:
-        for meta in self.meta_list:
-            for _ in meta.get("statistics").keys():
-                meta.get("statistics")[_] = meta.get("statistics").get(_).to_dict()
+        for idx, meta in enumerate(self.meta_list):
+            if meta.get("field_type") == Constants.FIELD_TYPE_INT or \
+                    meta.get("field_type") == Constants.FIELD_TYPE_FLOAT:
+                for _ in self.LOCAL_KEYS:
+                    result_dict = self.meta_func_list[idx].get(_).to_dict()
+                    meta.get("statistics").update(result_dict)
         return self.meta_list

@@ -23,6 +23,8 @@ class GlobalStatistics(Analyzer):
 
     def to_dict(self) -> Dict:
         return {
-            "variance": self.variance,
-            "std_dev": self.stddev
+            "global": {
+                "variance": self.variance,
+                "std_dev": self.stddev
+            }
         }

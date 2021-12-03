@@ -27,5 +27,7 @@ class LocalStatistics(Analyzer):
 
     def to_dict(self) -> Dict:
         return {
-            "local_var": self.local_var,
+            "local": {
+                "local_var": self.local_var,
+            }
         }

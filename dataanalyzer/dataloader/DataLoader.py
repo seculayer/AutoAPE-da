@@ -51,6 +51,6 @@ class DataLoader(object):
 
     def write_meta(self, filename) -> None:
         f = self.mrms_sftp_client.open(filename, "w")
-        print(self.generate_meta())
+        # print(self.generate_meta())
         f.write(json.dumps(self.generate_meta(), indent=2))
         f.close()

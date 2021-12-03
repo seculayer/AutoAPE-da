@@ -137,7 +137,7 @@ class TableDatasetMetaChief(DatasetMeta):
                 for local_meta in local_meta_list:
                     gs.apply(local_meta[idx].get("statistics").get("local").get("local_var"))
                 gs.calculate()
-                meta.get("statistics")["global"] = gs.to_dict()
+                meta.get("statistics").update(gs.to_dict())
 
     @staticmethod
     def determine_type(type_stat: Dict) -> str:
