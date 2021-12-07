@@ -23,8 +23,6 @@ class TableDatasetMetaChief(DatasetMeta):
 
     def __init__(self):
         DatasetMeta.__init__(self)
-        self.field_list = list()
-        self.meta_func_list: List[Dict] = list()
 
     def initialize(self, job_info: DAJobInfo) -> None:
         self.field_list = job_info.get_field_list()

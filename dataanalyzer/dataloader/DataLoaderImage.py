@@ -7,7 +7,7 @@ from typing import Dict, List
 
 import numpy as np
 
-from dataanalyzer.analyzer.TableDatasetMetaChief import TableDatasetMetaChief
+from dataanalyzer.analyzer.ImageDatasetMetaChief import ImageDatasetMetaChief
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.dataloader.DataDistributor import DataDistributor
 from dataanalyzer.dataloader.DataLoader import DataLoader
@@ -33,7 +33,7 @@ class DataLoaderImage(DataLoader):
 
     def load(self) -> None:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
-        self.dataset_meta: TableDatasetMetaChief = TableDatasetMetaChief()
+        self.dataset_meta: ImageDatasetMetaChief = ImageDatasetMetaChief()
         self.dataset_meta.initialize(self.job_info)
         while True:
             line = f.readline()
@@ -41,7 +41,7 @@ class DataLoaderImage(DataLoader):
                 break
             json_data = json.loads(line)
 
-            img_data = self._read_image(json_data)
+            img_data: np.array = self._read_image(json_data)
 
             self.dataset_meta.apply(json_data)
             self.data_dist.write(json_data)
@@ -61,8 +61,8 @@ class DataLoaderImage(DataLoader):
 
     def generate_meta(self) -> Dict:
         return {
-            "file_list": self.data_dist.get_file_list(),
-            "file_num_line": self.data_dist.get_fileline_list(),
+            "folder_list": self.data_dist.get_file_list(),
+            "file_num": self.data_dist.get_fileline_list(),
             "meta": self.dataset_meta.get_meta_list(),
             "dataset_meta": self.dataset_meta.get_meta_dataset()
         }

@@ -20,6 +20,7 @@ class Constants(metaclass=Singleton):
     DIR_DATA_ROOT = _CONFIG.get("dir_data_root", "/eyeCloudAI/data")
     DIR_DATA_ANALYZER = DIR_DATA_ROOT + _CONFIG.get("dir_data_analyzer")
     DIR_DIVISION_PATH = "/eyeCloudAI/data/processing/ape/division"
+    DIR_DA_PATH = "/eyeCloudAI/data/processing/ape/da"
 
 # Logs
     DIR_LOG = _CONFIG.get("dir_log", "/eyeCloudAI/logs")

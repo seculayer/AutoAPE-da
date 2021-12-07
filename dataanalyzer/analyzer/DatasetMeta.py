@@ -12,6 +12,8 @@ class DatasetMeta(object):
         self.n_rows = 0
         self.meta_dataset = dict()
         self.meta_list: List[Dict] = list()
+        self.field_list = list()
+        self.meta_func_list: List[Dict] = list()
 
     def initialize(self, **kwargs):
         raise NotImplementedError
@@ -25,8 +27,8 @@ class DatasetMeta(object):
             return None, Constants.FIELD_TYPE_NULL
         try:
             return int(data), Constants.FIELD_TYPE_INT
-        except ValueError as ve:
+        except ValueError:
             try:
                 return float(data), Constants.FIELD_TYPE_FLOAT
-            except ValueError as ve2:
+            except ValueError:
                 return data, Constants.FIELD_TYPE_STRING

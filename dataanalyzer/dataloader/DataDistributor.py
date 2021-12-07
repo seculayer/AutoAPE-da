@@ -19,17 +19,17 @@ class DataDistributor(object):
 
         self.job_info: DAJobInfo = job_info
         self.num_worker: int = num_worker
-        self.mrms_sftp_client: PySFTPClient = None
+        self.mrms_sftp_client = None
         self.max_rows, self.mod = self.determine_max_rows(self.job_info.get_instances())
         self.current: int = 0
         self.current_worker_n: int = 0
-        self.writer: paramiko.SFTPFile = None
+        self.writer = None
         self.filename_list: List[str] = list()
         self.fileline_list: List[int] = list()
 
     def initialize(self, client):
-        self.mrms_sftp_client = client
-        self.writer = self.open()
+        self.mrms_sftp_client: PySFTPClient = client
+        self.writer: paramiko.SFTPFile = self.open()
 
     def determine_max_rows(self, instances) -> (int, int):
         return int(instances / self.num_worker), int(instances % self.num_worker)
