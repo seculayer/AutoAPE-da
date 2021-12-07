@@ -18,14 +18,20 @@ class DataAnalyzerWorker(KubePodSafetyTermThread, metaclass=Singleton):
         self.logger = Common.LOGGER.get_logger()
 
         self.da_manager = DataAnalyzerWorkerManager()
-        self.da_manager.initialize(job_id, job_idx)
-
-        self.logger.info("DataAnalyzer Initialized!")
+        try:
+            self.da_manager.initialize(job_id, job_idx)
+            self.logger.info("DataAnalyzer Initialized!")
+        except Exception as e:
+            self.logger.error(e, exc_info=True)
 
     def run(self) -> None:
-        self.da_manager.data_loader()
-        self.da_manager.terminate()
-        self.logger.info("DataAnalyzer terminate!")
+        try:
+            self.da_manager.data_loader()
+        except Exception as e:
+            self.logger.error(e, exc_info=True)
+        finally:
+            self.da_manager.terminate()
+            self.logger.info("DataAnalyzer terminate!")
 
 
 # ---- main function
