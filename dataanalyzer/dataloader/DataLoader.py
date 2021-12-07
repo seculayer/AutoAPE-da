@@ -5,7 +5,7 @@
 import json
 from typing import Dict
 
-from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
+from dataanalyzer.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
@@ -16,7 +16,7 @@ class DataLoader(object):
         self.job_info: DAJobInfo = job_info
         self.sftp_client: PySFTPClient = sftp_client
         self.mrms_sftp_client: PySFTPClient = mrms_sftp_client
-        self.dataset_meta: DatasetMeta = DatasetMeta()
+        self.dataset_meta: DatasetMetaAbstract = DatasetMetaAbstract()
         self.num_worker: int = 1
 
     def load(self):
@@ -31,7 +31,7 @@ class DataLoader(object):
     def get_num_worker(self) -> int:
         return self.num_worker
 
-    def get_meta(self) -> DatasetMeta:
+    def get_meta(self) -> DatasetMetaAbstract:
         return self.dataset_meta
 
     def worker_monitor(self) -> bool:

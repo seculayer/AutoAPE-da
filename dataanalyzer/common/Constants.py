@@ -51,6 +51,7 @@ class Constants(metaclass=Singleton):
     FIELD_TYPE_INT = "int"
     FIELD_TYPE_FLOAT = "float"
     FIELD_TYPE_STRING = "string"
+    FIELD_TYPE_IMAGE = "image"
 
     JOB_TYPE_CHIEF = "chief"
     JOB_TYPE_WORKER = "worker"

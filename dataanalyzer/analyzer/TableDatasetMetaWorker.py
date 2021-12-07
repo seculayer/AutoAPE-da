@@ -4,29 +4,28 @@
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 from typing import Dict, List
 
-from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
+from dataanalyzer.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.analyzer.table.numeric.LocalStatistics import LocalStatistics
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 
-class TableDatasetMetaWorker(DatasetMeta):
+class TableDatasetMetaWorker(DatasetMetaAbstract):
     COMMON_KEYS = ["unique"]
     LOCAL_KEYS = ["local"]
 
     def __init__(self):
-        DatasetMeta.__init__(self)
+        DatasetMetaAbstract.__init__(self)
         self.meta_func_list: List[Dict] = list()
 
-    def initialize(self, meta_json: Dict, job_info: DAJobInfo):
+    def initialize(self, job_info: DAJobInfo, meta_json: Dict = None):
         self.meta_list: List[Dict] = meta_json.get("meta", list())
 
         for idx, _ in enumerate(self.meta_list):
             self.meta_func_list.append(self._initialize_meta_functions(job_info, _))
             _["statistics"] = dict()
 
-    @staticmethod
-    def _initialize_meta_functions(job_info: DAJobInfo, meta) -> Dict:
+    def _initialize_meta_functions(self, job_info: DAJobInfo, meta) -> Dict:
         field_type = meta.get("field_type")
         if field_type == Constants.FIELD_TYPE_INT or field_type == Constants.FIELD_TYPE_FLOAT:
             local_statistic = LocalStatistics()
@@ -40,7 +39,7 @@ class TableDatasetMetaWorker(DatasetMeta):
 
     def apply(self, data):
         for idx, fd in enumerate(self.meta_list):
-            result, f_type = DatasetMeta._field_type(data.get(fd.get("field_nm")))
+            result, f_type = DatasetMetaAbstract._field_type(data.get(fd.get("field_nm")))
 
             # numeric
             if fd.get("field_type") == Constants.FIELD_TYPE_INT or fd.get("field_type") == Constants.FIELD_TYPE_FLOAT:

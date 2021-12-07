@@ -35,6 +35,7 @@ class DataLoaderImage(DataLoader):
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
         self.dataset_meta: ImageDatasetMetaChief = ImageDatasetMetaChief()
         self.dataset_meta.initialize(self.job_info)
+
         while True:
             line = f.readline()
             if not line:
@@ -42,9 +43,11 @@ class DataLoaderImage(DataLoader):
             json_data = json.loads(line)
 
             img_data: np.array = self._read_image(json_data)
-
-            self.dataset_meta.apply(json_data)
-            self.data_dist.write(json_data)
+            self.dataset_meta.apply(img_data)
+            self.dataset_meta.apply_annotation(json_data)
+            # print(json_data)
+            # break
+            # self.data_dist.write(json_data)
 
         self.data_dist.make_fileline_list()
 

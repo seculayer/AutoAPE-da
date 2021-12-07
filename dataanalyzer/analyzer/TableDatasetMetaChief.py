@@ -4,56 +4,30 @@
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 from typing import Dict, List
 
-from dataanalyzer.analyzer.DatasetMeta import DatasetMeta
+from dataanalyzer.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.analyzer.dataset.common.NumFeature import NumFeature
 from dataanalyzer.analyzer.dataset.common.NumInstance import NumInstance
-from dataanalyzer.analyzer.table.categorical.Unique import Unique
-from dataanalyzer.analyzer.table.numeric.BasicStatistics import BasicStatistics
 from dataanalyzer.analyzer.table.numeric.GlobalStatistics import GlobalStatistics
-from dataanalyzer.analyzer.table.string.Word import Word
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 
-class TableDatasetMetaChief(DatasetMeta):
+class TableDatasetMetaChief(DatasetMetaAbstract):
     COMMON_KEYS = ["unique"]
     NUMERIC_KEYS = ["basic"]
     GLOBAL_KEYS = ["global"]
     STRING_KEYS = ["word"]
 
     def __init__(self):
-        DatasetMeta.__init__(self)
+        DatasetMetaAbstract.__init__(self)
 
-    def initialize(self, job_info: DAJobInfo) -> None:
+    def initialize(self, job_info: DAJobInfo, meta_json: Dict = None) -> None:
+        super().initialize(job_info)
+
         self.field_list = job_info.get_field_list()
-        self._initialize_basic_dataset_meta(job_info)
-
         for idx, field_nm in enumerate(self.field_list):
             self.meta_list.append(self._initialize_metadata(idx, field_nm))
-            self.meta_func_list.append(self._initialize_meta_functions(job_info))
-
-    @staticmethod
-    def _initialize_metadata(idx, field_nm) -> Dict:
-        return {
-            "field_nm": field_nm,
-            "field_idx": idx,
-            "field_type": None,
-            "type_stat": {
-                Constants.FIELD_TYPE_NULL: 0,
-                Constants.FIELD_TYPE_INT: 0,
-                Constants.FIELD_TYPE_FLOAT: 0,
-                Constants.FIELD_TYPE_STRING: 0,
-            },
-            "statistics": dict(),
-        }
-
-    @staticmethod
-    def _initialize_meta_functions(job_info: DAJobInfo) -> Dict:
-        return {
-            "basic": BasicStatistics(),
-            "unique": Unique(job_info.get_instances()),
-            "word": Word(),
-        }
+            self.meta_func_list.append(self._initialize_meta_functions(job_info, None))
 
     def _initialize_basic_dataset_meta(self, job_info: DAJobInfo) -> None:
         num_features = NumFeature()
@@ -76,7 +50,7 @@ class TableDatasetMetaChief(DatasetMeta):
 
     def _apply_field_meta(self, data) -> None:
         for idx, field_nm in enumerate(self.field_list):
-            result, f_type = DatasetMeta._field_type(data.get(field_nm))
+            result, f_type = DatasetMetaAbstract._field_type(data.get(field_nm))
             self.meta_list[idx].get("type_stat")[f_type] += 1
 
             if f_type is not Constants.FIELD_TYPE_NULL:
@@ -100,27 +74,20 @@ class TableDatasetMetaChief(DatasetMeta):
             meta["field_type"] = self.determine_type(meta.get("type_stat"))
 
             if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT \
-                    or meta.get("field_type") == Constants.FIELD_TYPE_INT \
-                    or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+                or meta.get("field_type") == Constants.FIELD_TYPE_INT \
+                or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
                 for _ in self.STRING_KEYS:
                     del self.meta_func_list[idx][_]
 
             if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT \
-                    or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+                or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
                 del self.meta_func_list[idx]["unique"]
 
             if meta.get("field_type") == Constants.FIELD_TYPE_STRING \
-                    or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+                or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
                 del self.meta_func_list[idx]["basic"]
 
-            for _ in meta.get("statistics"):
-                self.meta_func_list[idx].get(_).calculate()
-
-            # end
-            for _ in self.meta_func_list[idx].keys():
-                result_dict = self.meta_func_list[idx].get(_).to_dict()
-                if len(result_dict) > 0:
-                    meta.get("statistics").update(result_dict)
+            self._statistic_calculate(idx, meta)
 
             # tag
             meta["field_tag"] = self.calculate_field_tag(meta)
@@ -150,12 +117,6 @@ class TableDatasetMetaChief(DatasetMeta):
         if ft_string > ft_int and ft_string > ft_float:
             return Constants.FIELD_TYPE_STRING
         return Constants.FIELD_TYPE_NULL
-
-    def get_meta_list(self) -> List[dict]:
-        return self.meta_list
-
-    def get_meta_dataset(self) -> Dict:
-        return self.meta_dataset
 
     def calculate_field_tag(self, meta) -> List[str]:
         tag_list = list()
