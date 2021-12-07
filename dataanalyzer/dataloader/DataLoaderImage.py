@@ -5,11 +5,14 @@
 import json
 from typing import Dict, List
 
+import numpy as np
+
 from dataanalyzer.analyzer.TableDatasetMetaChief import TableDatasetMetaChief
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.dataloader.DataDistributor import DataDistributor
 from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.info.DAJobInfo import DAJobInfo
+from dataanalyzer.util.ImageUtils import ImageUtils
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 
 
@@ -23,7 +26,7 @@ class DataLoaderImage(DataLoader):
     @staticmethod
     def determine_n_workers(instances):
         n_workers = int(instances / Constants.DISTRIBUTE_INSTANCES_IMAGE)
-        if instances % Constants.DISTRIBUTE_INSTANCES_TABLE == 0:
+        if instances % Constants.DISTRIBUTE_INSTANCES_IMAGE == 0:
             return n_workers
         else:
             return n_workers + 1
@@ -38,6 +41,8 @@ class DataLoaderImage(DataLoader):
                 break
             json_data = json.loads(line)
 
+            img_data = self._read_image(json_data)
+
             self.dataset_meta.apply(json_data)
             self.data_dist.write(json_data)
 
@@ -47,6 +52,12 @@ class DataLoaderImage(DataLoader):
         f.close()
         self.data_dist.close()
         self.write_meta("{}/DA_CHIEF_{}.meta".format(Constants.DIR_DIVISION_PATH, self.job_info.get_job_id()))
+
+    def _read_image(self, annotation_data: Dict) -> np.array:
+        filepath = annotation_data.get("file_path")
+        filename = annotation_data.get("file_conv_nm")
+        img_f = self.sftp_client.open("{}/{}".format(filepath, filename, "rb"))
+        return ImageUtils.load(img_f.read())
 
     def generate_meta(self) -> Dict:
         return {
