@@ -5,6 +5,7 @@
 
 # ---- python base packages
 import time
+from datetime import datetime
 
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
@@ -20,29 +21,42 @@ class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
         self.logger = Common.LOGGER.get_logger()
 
         self.da_manager = DataAnalyzerChiefManager()
-        self.da_manager.initialize(job_id, "0")
         self.job_id = job_id
 
-        self.logger.info("DataAnalyzer Initialized!")
+        try:
+            self.da_manager.initialize(job_id, "0")
+            self.logger.info("DataAnalyzer Initialized!")
+        except Exception as e:
+            self.logger.error(e, exc_info=True)
 
     def run(self) -> None:
-        self.da_manager.data_loader()
+        try:
+            self.da_manager.data_loader()
 
-        # request to mrms for worker create
-        self.da_manager.request_worker_create()
+            # request to mrms for worker create
+            self.da_manager.request_worker_create()
 
-        # monitoring worker end
-        while not self.da_manager.monitor_worker_end():
-            time.sleep(1)
+            # monitoring worker end
+            start_time = datetime.now()
+            while not self.da_manager.monitor_worker_end():
+                time.sleep(1)
+                if (datetime.now() - start_time).total_seconds() >= Constants.WORKER_WAITING_TIMEOUT:
+                    break
 
-        # calculate to global meta feature
-        self.da_manager.calculate_global_meta()
+            # calculate to global meta feature
+            self.da_manager.calculate_global_meta()
 
-        # bye
-        self.da_manager.request_da_terminate()
-        self.da_manager.terminate()
-        self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_DA_RM_REQ)
-        self.logger.info("DataAnalyzer terminate!")
+            self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_DA_RM_REQ)
+
+        except Exception as e:
+            self.logger.error(e, exc_info=True)
+            self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_ERROR)
+
+        finally:
+            # bye
+            self.da_manager.request_da_terminate()
+            self.da_manager.terminate()
+            self.logger.info("DataAnalyzer terminate!")
 
 
 # ---- main function

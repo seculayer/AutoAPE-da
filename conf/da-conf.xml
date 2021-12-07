@@ -61,4 +61,9 @@
         <name>distribute_instances</name>
         <value>100000</value>
     </property>
+    <property>
+        <name>worker_waiting_timeout</name>
+        <value>86400</value>
+        <description>seconds</description>
+    </property>
 </configuration>

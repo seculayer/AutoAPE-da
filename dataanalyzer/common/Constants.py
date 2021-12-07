@@ -44,6 +44,7 @@ class Constants(metaclass=Singleton):
 
     # DATASET STATUS
     STATUS_DA_RM_REQ = "9"
+    STATUS_ERROR = "8"
 
     # TABLE FIELD TYPE
     FIELD_TYPE_NULL = "null"
@@ -58,6 +59,8 @@ class Constants(metaclass=Singleton):
 
     # FIELD TAG
     TAG_CATEGORY = "Categorical"
+
+    WORKER_WAITING_TIMEOUT = int(_CONFIG.get("worker_waiting_timeout", "86400"))  # 1 day
 
 
 if __name__ == '__main__':
