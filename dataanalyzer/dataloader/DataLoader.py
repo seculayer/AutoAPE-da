@@ -3,9 +3,11 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import json
+from logging import Logger
 from typing import Dict
 
 from dataanalyzer.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
+from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
@@ -13,6 +15,7 @@ from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 
 class DataLoader(object):
     def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
+        self.logger: Logger = Common.LOGGER.get_logger()
         self.job_info: DAJobInfo = job_info
         self.sftp_client: PySFTPClient = sftp_client
         self.mrms_sftp_client: PySFTPClient = mrms_sftp_client

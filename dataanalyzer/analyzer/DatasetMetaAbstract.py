@@ -67,6 +67,12 @@ class DatasetMetaAbstract(object):
             "size": ImageShape(),
         }
 
+    @staticmethod
+    def _initialize_label_meta_functions(job_info: DAJobInfo) -> Dict:
+        return {
+            "unique": Unique(job_info.get_instances()),
+        }
+
     def apply(self, data):
         raise NotImplementedError
 

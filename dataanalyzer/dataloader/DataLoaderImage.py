@@ -35,12 +35,14 @@ class DataLoaderImage(DataLoader):
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
         self.dataset_meta: ImageDatasetMetaChief = ImageDatasetMetaChief()
         self.dataset_meta.initialize(self.job_info)
-
+        idx = 0
         while True:
             line = f.readline()
             if not line:
+                self.logger.info("file : {} / {} loaded...".format(idx, self.job_info.get_instances()))
                 break
             json_data = json.loads(line)
+            # print(json_data)
 
             img_data: np.array = self._read_image(json_data)
             self.dataset_meta.apply(img_data)
@@ -48,8 +50,11 @@ class DataLoaderImage(DataLoader):
             # print(json_data)
             # break
             # self.data_dist.write(json_data)
+            idx += 1
+            if idx % 100 == 0:
+                self.logger.info("file : {} / {} loaded...".format(idx, self.job_info.get_instances()))
 
-        self.data_dist.make_fileline_list()
+        # self.data_dist.make_fileline_list()
 
         self.dataset_meta.calculate()
         f.close()

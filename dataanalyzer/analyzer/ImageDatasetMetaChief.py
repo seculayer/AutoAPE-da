@@ -12,7 +12,7 @@ from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 class ImageDatasetMetaChief(DatasetMetaAbstract):
     IMAGE_KEYS = ["size"]
-    COMMON_KEYS = ["label"]
+    COMMON_KEYS = [("unique", "label")]
 
     def __init__(self):
         DatasetMetaAbstract.__init__(self)
@@ -25,9 +25,9 @@ class ImageDatasetMetaChief(DatasetMetaAbstract):
         self.meta_list.append(self._initialize_image_metadata(0, "image"))
         self.meta_func_list.append(self._initialize_image_meta_functions(job_info))
 
-        for idx, field_nm in enumerate(self.field_list[1:]):
-            self.meta_list.append(self._initialize_metadata(idx + 1, field_nm))
-            self.meta_func_list.append(self._initialize_meta_functions(job_info, None))
+        for idx, _tup in enumerate(self.COMMON_KEYS):
+            self.meta_list.append(self._initialize_metadata(idx + 1, _tup[1]))
+            self.meta_func_list.append(self._initialize_label_meta_functions(job_info))
 
     def _initialize_basic_dataset_meta(self, job_info: DAJobInfo) -> None:
         super()._initialize_basic_dataset_meta(job_info)
@@ -37,7 +37,8 @@ class ImageDatasetMetaChief(DatasetMetaAbstract):
             self.meta_func_list[0].get(_).apply(data)
 
     def apply_annotation(self, json_data: Dict):
-        pass
+        for idx, _tup in enumerate(self.COMMON_KEYS):
+            self.meta_func_list[idx + 1].get(_tup[0]).apply(json_data.get(_tup[1]))
 
     def calculate(self):
         for idx, meta in enumerate(self.meta_list):
