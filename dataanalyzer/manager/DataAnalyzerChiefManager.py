@@ -89,8 +89,10 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         self.logger.info("update dataset status : {} {} {}".format(response.status_code, response.reason, response.text))
 
     def terminate(self):
-        self.mrms_sftp_manager.close()
-        self.storage_sftp_manager.close()
+        if self.mrms_sftp_manager is not None:
+            self.mrms_sftp_manager.close()
+        if self.storage_sftp_manager is not None:
+            self.storage_sftp_manager.close()
 
 
 if __name__ == '__main__':
