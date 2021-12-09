@@ -38,7 +38,9 @@ class DataDistributor(object):
         return f"{Constants.DIR_DA_PATH}/{self.job_info.job_id}/{self.job_info.job_id}_{self.current_worker_n}"
 
     def open(self) -> paramiko.SFTPFile:
-        self.filename_list.append(self.get_filename() + ".done")
+        self.filename_list.append(
+            f"{Constants.DIR_DA_PATH}/{self.job_info.job_id}/{self.current_worker_n}/{self.job_info.job_id}_{self.current_worker_n}.done"
+        )
         return self.mrms_sftp_client.open(self.get_filename() + ".tmp", "w")
 
     def close(self):
