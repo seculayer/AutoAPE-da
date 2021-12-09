@@ -59,7 +59,9 @@ class DataLoaderImage(DataLoader):
         self.dataset_meta.calculate()
         f.close()
         self.data_dist.close()
-        self.write_meta("{}/DA_CHIEF_{}.meta".format(Constants.DIR_DIVISION_PATH, self.job_info.get_job_id()))
+        self.write_meta(
+            f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_CHIEF_{self.job_info.get_job_id()}.meta"
+        )
 
     def _read_image(self, annotation_data: Dict) -> np.array:
         filepath = annotation_data.get("file_path")
@@ -82,4 +84,4 @@ class DataLoaderImage(DataLoader):
             local_meta_list.append(self.load_local_meta(idx))
 
         self.dataset_meta.calculate_global_meta(local_meta_list)
-        self.write_meta("{}/DA_META_{}.info".format(Constants.DIR_DIVISION_PATH, self.job_info.get_job_id()))
+        self.write_meta(f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_META_{self.job_info.get_job_id()}.info")

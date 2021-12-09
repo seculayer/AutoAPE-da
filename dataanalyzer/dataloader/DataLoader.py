@@ -40,14 +40,16 @@ class DataLoader(object):
     def worker_monitor(self) -> bool:
         for idx in range(self.num_worker):
             if not self.mrms_sftp_client.is_exist(
-                    "{}/DA_WORKER_{}_{}.meta".format(
-                        Constants.DIR_DIVISION_PATH, self.job_info.get_job_id(), idx)):
+                f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_WORKER_{self.job_info.get_job_id()}_{idx}.meta"
+            ):
                 return False
         return True
 
     def load_local_meta(self, idx):
         f = self.mrms_sftp_client.open(
-            "{}/DA_WORKER_{}_{}.meta".format(Constants.DIR_DIVISION_PATH, self.job_info.get_job_id(), idx), "r")
+            f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_WORKER_{self.job_info.get_job_id()}_{idx}.meta",
+            "r"
+        )
         meta = json.loads(f.read()).get("meta")
         f.close()
         return meta

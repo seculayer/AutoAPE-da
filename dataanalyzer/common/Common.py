@@ -15,7 +15,6 @@ class Common(metaclass=Singleton):
     # make directories
     FileUtils.mkdir(Constants.DIR_DATA_ROOT)
     FileUtils.mkdir(Constants.DIR_LOG)
-    FileUtils.mkdir(Constants.DIR_DA_PATH)
 
     # LOGGER
     LOGGER: MPLogger = MPLogger(log_dir=Constants.DIR_LOG, log_level=Constants.LOG_LEVEL,

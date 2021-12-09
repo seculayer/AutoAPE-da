@@ -18,17 +18,20 @@ class DataLoaderTableWorker(DataLoader):
         self.worker_idx = job_idx
 
     def load_meta(self):
-        f = self.mrms_sftp_client.open("{}/DA_CHIEF_{}.meta".format(
-            Constants.DIR_DIVISION_PATH, self.job_info.get_job_id()))
+        f = self.mrms_sftp_client.open(
+            f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_CHIEF_{self.job_info.get_job_id()}.meta"
+        )
         result: Dict = json.loads(f.read())
         f.close()
         return result
 
     def load(self) -> None:
-        f = self.mrms_sftp_client.open("{}/{}_{}.done".format(
-            Constants.DIR_DIVISION_PATH, self.job_info.get_job_id(), self.worker_idx), "r")
+        f = self.mrms_sftp_client.open(
+            f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/{self.worker_idx}/{self.job_info.get_job_id()}_{self.worker_idx}.done",
+            "r"
+        )
         self.dataset_meta: TableDatasetMetaWorker = TableDatasetMetaWorker()
-        self.dataset_meta.initialize(self.load_meta(), self.job_info)
+        self.dataset_meta.initialize(self.job_info, self.load_meta())
 
         while True:
             line = f.readline()
@@ -39,8 +42,9 @@ class DataLoaderTableWorker(DataLoader):
 
         self.dataset_meta.calculate()
         f.close()
-        self.write_meta("{}/DA_WORKER_{}_{}.meta".format(
-            Constants.DIR_DIVISION_PATH, self.job_info.get_job_id(), self.worker_idx))
+        self.write_meta(
+            f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_WORKER_{self.job_info.get_job_id()}_{self.worker_idx}.meta"
+        )
 
     def generate_meta(self) -> Dict:
         return {

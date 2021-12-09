@@ -35,8 +35,7 @@ class DataDistributor(object):
         return int(instances / self.num_worker), int(instances % self.num_worker)
 
     def get_filename(self) -> str:
-        return "{}/{}_{}".format(
-            Constants.DIR_DIVISION_PATH, self.job_info.job_id, self.current_worker_n)
+        return f"{Constants.DIR_DA_PATH}/{self.job_info.job_id}/{self.job_info.job_id}_{self.current_worker_n}"
 
     def open(self) -> paramiko.SFTPFile:
         self.filename_list.append(self.get_filename() + ".done")

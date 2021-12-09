@@ -45,7 +45,7 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         self.logger.info("DataAnalyzerManager initialized.")
 
     def load_job_info(self, job_id: str, job_idx: str):
-        filename = Constants.DIR_DIVISION_PATH + "/DA_{}.job".format(job_id)
+        filename = Constants.DIR_JOB_PATH + f"/{job_id}/DA_{job_id}.job"
         self.logger.info("load file name : {}".format(filename))
         return DAJobInfo(self.mrms_sftp_manager.get_client(), filename)
 
