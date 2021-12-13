@@ -2,7 +2,7 @@
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
-from typing import Dict
+from typing import Dict, List
 
 import numpy as np
 
@@ -43,3 +43,8 @@ class ImageDatasetMetaChief(DatasetMetaAbstract):
     def calculate(self):
         for idx, meta in enumerate(self.meta_list):
             self._statistic_calculate(idx, meta)
+
+    # Chief-Worker Statistics
+    def calculate_global_meta(self, local_meta_list: List[List[Dict]]) -> None:
+        pass
+

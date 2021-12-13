@@ -104,3 +104,12 @@ class DatasetMetaAbstract(object):
                 return float(data), Constants.FIELD_TYPE_FLOAT
             except ValueError:
                 return data, Constants.FIELD_TYPE_STRING
+
+    def get_meta_list_for_worker(self) -> List[dict]:
+        for idx, meta in enumerate(self.meta_list):
+            if meta.get("field_type") == Constants.FIELD_TYPE_INT or \
+               meta.get("field_type") == Constants.FIELD_TYPE_FLOAT:
+                for _ in self.LOCAL_KEYS:
+                    result_dict = self.meta_func_list[idx].get(_).to_dict()
+                    meta.get("statistics").update(result_dict)
+        return self.meta_list

@@ -10,9 +10,9 @@ from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 
-class TableDatasetMetaWorker(DatasetMetaAbstract):
-    COMMON_KEYS = ["unique"]
-    LOCAL_KEYS = ["local"]
+class ImageDatasetMetaWorker(DatasetMetaAbstract):
+    COMMON_KEYS = []
+    LOCAL_KEYS = []
 
     def __init__(self):
         DatasetMetaAbstract.__init__(self)
@@ -27,25 +27,12 @@ class TableDatasetMetaWorker(DatasetMetaAbstract):
 
     def _initialize_meta_functions(self, job_info: DAJobInfo, meta) -> Dict:
         field_type = meta.get("field_type")
-        if field_type == Constants.FIELD_TYPE_INT or field_type == Constants.FIELD_TYPE_FLOAT:
-            local_statistic = LocalStatistics()
-            local_statistic.initialize(
-                job_info.get_instances(), float(meta.get("statistics").get("basic").get("mean")))
-            return {
-                "local": local_statistic,
-            }
-        else:
-            return {}
+        return dict()
 
     def apply(self, data):
         for idx, fd in enumerate(self.meta_list):
-            result, f_type = DatasetMetaAbstract._field_type(data.get(fd.get("field_nm")))
-
-            # numeric
-            if fd.get("field_type") == Constants.FIELD_TYPE_INT or fd.get("field_type") == Constants.FIELD_TYPE_FLOAT:
-                if f_type is Constants.FIELD_TYPE_INT or f_type is Constants.FIELD_TYPE_FLOAT:
-                    for _key in self.LOCAL_KEYS:
-                        self.meta_func_list[idx].get(_key).apply(result)
+            # result, f_type = DatasetMetaAbstract._field_type(data.get(fd.get("field_nm")))
+            pass
 
     def calculate(self):
         for idx, meta in enumerate(self.meta_list):
