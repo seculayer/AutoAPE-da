@@ -34,13 +34,15 @@ class DataDistributor(object):
     def determine_max_rows(self, instances) -> (int, int):
         return int(instances / self.num_worker), int(instances % self.num_worker)
 
+    def get_folder(self) -> str:
+        return f"{Constants.DIR_DA_PATH}/{self.job_info.job_id}/{self.current_worker_n}"
+
     def get_filename(self) -> str:
-        return f"{Constants.DIR_DA_PATH}/{self.job_info.job_id}/{self.job_info.job_id}_{self.current_worker_n}"
+        return f"{self.get_folder()}/{self.job_info.job_id}_{self.current_worker_n}"
 
     def open(self) -> paramiko.SFTPFile:
-        self.filename_list.append(
-            f"{Constants.DIR_DA_PATH}/{self.job_info.job_id}/{self.current_worker_n}/{self.job_info.job_id}_{self.current_worker_n}.done"
-        )
+        self.mrms_sftp_client.mkdir(self.get_folder())
+        self.filename_list.append(self.get_filename() + ".done")
         return self.mrms_sftp_client.open(self.get_filename() + ".tmp", "w")
 
     def close(self):

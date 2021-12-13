@@ -9,8 +9,8 @@ import numpy as np
 
 from dataanalyzer.analyzer.ImageDatasetMetaChief import ImageDatasetMetaChief
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.dataloader.DataDistributor import DataDistributor
 from dataanalyzer.dataloader.DataLoader import DataLoader
+from dataanalyzer.dataloader.distributor.DataDistributorImage import DataDistributorImage
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.util.ImageUtils import ImageUtils
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
@@ -20,7 +20,7 @@ class DataLoaderImage(DataLoader):
     def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
         DataLoader.__init__(self, job_info, sftp_client, mrms_sftp_client)
         self.num_worker = self.determine_n_workers(self.job_info.get_instances())
-        self.data_dist = DataDistributor(job_info, self.num_worker)
+        self.data_dist = DataDistributorImage(job_info, self.num_worker)
         self.data_dist.initialize(mrms_sftp_client)
 
     @staticmethod
@@ -42,19 +42,21 @@ class DataLoaderImage(DataLoader):
                 self.logger.info("file : {} / {} loaded...".format(idx, self.job_info.get_instances()))
                 break
             json_data = json.loads(line)
-            # print(json_data)
 
-            img_data: np.array = self._read_image(json_data)
+            img_byte: bytes = self._read_image_binary(json_data)
+            img_data: np.array = ImageUtils.load(img_byte)
+
             self.dataset_meta.apply(img_data)
             self.dataset_meta.apply_annotation(json_data)
-            # print(json_data)
-            # break
-            # self.data_dist.write(json_data)
+
+            self.data_dist.write_image(json_data, img_byte)
+            self.data_dist.write(json_data)
+
             idx += 1
             if idx % 100 == 0:
                 self.logger.info("file : {} / {} loaded...".format(idx, self.job_info.get_instances()))
 
-        # self.data_dist.make_fileline_list()
+        self.data_dist.make_fileline_list()
 
         self.dataset_meta.calculate()
         f.close()
@@ -63,11 +65,13 @@ class DataLoaderImage(DataLoader):
             f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_CHIEF_{self.job_info.get_job_id()}.meta"
         )
 
-    def _read_image(self, annotation_data: Dict) -> np.array:
+    def _read_image_binary(self, annotation_data: Dict) -> bytes:
         filepath = annotation_data.get("file_path")
         filename = annotation_data.get("file_conv_nm")
         img_f = self.sftp_client.open("{}/{}".format(filepath, filename, "rb"))
-        return ImageUtils.load(img_f.read())
+        img_array = img_f.read()
+        img_f.close()
+        return img_array
 
     def generate_meta(self) -> Dict:
         return {

@@ -7,7 +7,7 @@ from typing import Dict, List
 
 from dataanalyzer.analyzer.TableDatasetMetaChief import TableDatasetMetaChief
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.dataloader.DataDistributor import DataDistributor
+from dataanalyzer.dataloader.distributor.DataDistributor import DataDistributor
 from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient

@@ -46,7 +46,6 @@ class PySFTPClient(object):
         except Exception:
             pass
 
-
 if __name__ == '__main__':
     sftp_client = PySFTPClient("localhost", 22, "Kmw/y3YWiiO7gJ/zqMvCuw==", "jTf6XrqcYX1SAhv9JUPq+w==")
     with sftp_client.open("/home/seculayer/temp.tmp", "w") as f:
