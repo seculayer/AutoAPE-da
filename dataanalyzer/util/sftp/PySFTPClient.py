@@ -39,6 +39,13 @@ class PySFTPClient(object):
         except FileNotFoundError:
             return False
 
+    def mkdir(self, folder) -> None:
+        try:
+            if not self.is_exist(folder):
+                self.sftp.mkdir(folder)
+        except Exception:
+            pass
+
 
 if __name__ == '__main__':
     sftp_client = PySFTPClient("localhost", 22, "Kmw/y3YWiiO7gJ/zqMvCuw==", "jTf6XrqcYX1SAhv9JUPq+w==")

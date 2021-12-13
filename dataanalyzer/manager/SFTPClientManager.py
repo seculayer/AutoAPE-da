@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
-# Powered by Seculayer © 2021 Service Model Team, R&D Center. 
+# Powered by Seculayer © 2021 Service Model Team, R&D Center.
 
 from typing import List
 
@@ -29,6 +29,9 @@ class SFTPClientManager(object):
 
     def rename(self, src, dst) -> None:
         self.sftp_client.rename(src, dst)
+
+    def mkdir(self, src) -> None:
+        self.sftp_client.mkdir(src)
 
     def close(self) -> None:
         self.sftp_client.close()
