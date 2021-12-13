@@ -75,7 +75,7 @@ class DataLoaderImage(DataLoader):
 
     def generate_meta(self) -> Dict:
         return {
-            "folder_list": self.data_dist.get_file_list(),
+            "file_list": self.data_dist.get_file_list(),
             "file_num": self.data_dist.get_fileline_list(),
             "meta": self.dataset_meta.get_meta_list(),
             "dataset_meta": self.dataset_meta.get_meta_dataset()
