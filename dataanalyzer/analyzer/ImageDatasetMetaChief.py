@@ -42,6 +42,8 @@ class ImageDatasetMetaChief(DatasetMetaAbstract):
 
     def calculate(self):
         for idx, meta in enumerate(self.meta_list):
+            if meta["field_nm"] == "label":
+                meta["field_type"] = "string"
             self._statistic_calculate(idx, meta)
 
     # Chief-Worker Statistics

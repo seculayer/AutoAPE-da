@@ -74,17 +74,17 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
             meta["field_type"] = self.determine_type(meta.get("type_stat"))
 
             if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT \
-                or meta.get("field_type") == Constants.FIELD_TYPE_INT \
-                or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+                    or meta.get("field_type") == Constants.FIELD_TYPE_INT \
+                    or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
                 for _ in self.STRING_KEYS:
                     del self.meta_func_list[idx][_]
 
             if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT \
-                or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+                    or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
                 del self.meta_func_list[idx]["unique"]
 
             if meta.get("field_type") == Constants.FIELD_TYPE_STRING \
-                or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+                    or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
                 del self.meta_func_list[idx]["basic"]
 
             self._statistic_calculate(idx, meta)
