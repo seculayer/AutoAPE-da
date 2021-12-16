@@ -16,6 +16,7 @@ class ImageShape(Analyzer):
         self.width: Dict = {"min": None, "max": None, "mean": 0, "sum": 0}
         self.height: Dict = {"min": None, "max": None, "mean": 0, "sum": 0}
         self.channel: Dict = {"min": None, "max": None, "mean": 0, "sum": 0}
+        self.value: Dict = {"min": None, "max": None, "mean": 0, "sum": 0}
 
         self.instances = 0
 
@@ -28,6 +29,7 @@ class ImageShape(Analyzer):
         self.width = self._calc_dict(img_shape[0], self.width)
         self.height = self._calc_dict(img_shape[1], self.height)
         self.channel = self._calc_dict(channel, self.channel)
+        self.value = self._calc_val_dict(val, self.value)
 
     def calculate(self) -> None:
         self.width["mean"] = self.width["sum"] / self.instances
@@ -35,11 +37,15 @@ class ImageShape(Analyzer):
         self.channel["mean"] = self.channel["sum"] / self.instances
 
     def to_dict(self) -> Dict:
-        return {
-            self.KEY: {
-                "width": self.width, "height": self.height, "channel": self.channel
-            }
+        rst: dict = {
+            # self.KEY: {
+            #     "width": self.width, "height": self.height, "channel": self.channel
+            # }
+            "width": self.width, "height": self.height, "channel": self.channel,
+            "sum": self.value.get("sum"), "mean": self.value.get("mean"),
+            "max": self.value.get("max"), "min": self.value.get("min"),
         }
+        return rst
 
     @staticmethod
     def _calc_dict(val: int, data_dict) -> Dict:
@@ -52,5 +58,16 @@ class ImageShape(Analyzer):
             if data_dict["max"] > val:
                 data_dict["max"] = val
         data_dict["sum"] += val
+
+        return data_dict
+
+    @staticmethod
+    def _calc_val_dict(image_arr: np.array, data_dict) -> Dict:
+        im_shape: tuple = image_arr.shape
+        n_pixel: int = int(np.prod(im_shape))
+        data_dict["sum"] = int(np.sum(image_arr))
+        data_dict["mean"] = data_dict["sum"] / n_pixel
+        data_dict["max"] = int(np.max(image_arr))
+        data_dict["min"] = int(np.min(image_arr))
 
         return data_dict
