@@ -35,6 +35,9 @@ class DataLoaderImage(DataLoader):
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
         self.dataset_meta: ImageDatasetMetaChief = ImageDatasetMetaChief()
         self.dataset_meta.initialize(self.job_info)
+
+        self.data_dist.make_fileline_list()
+
         idx = 0
         while True:
             line = f.readline()
@@ -55,8 +58,6 @@ class DataLoaderImage(DataLoader):
             idx += 1
             if idx % 100 == 0:
                 self.logger.info("file : {} / {} loaded...".format(idx, self.job_info.get_instances()))
-
-        self.data_dist.make_fileline_list()
 
         self.dataset_meta.calculate()
         f.close()

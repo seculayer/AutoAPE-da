@@ -57,13 +57,12 @@ class DataDistributor(object):
     def write(self, data: Dict):
         self.writer.write(json.dumps(data) + "\n")
         self.current += 1
-        if self.current >= self.max_rows:
-            if self.mod == 0 or self.mod < self.current_worker_n or self.current >= self.max_rows + 1:
-                self.close()
-                self.current = 0
-                self.current_worker_n += 1
-                if self.current_worker_n < self.num_worker:
-                    self.writer = self.open()
+        if self.current == self.fileline_list[self.current_worker_n]:
+            self.close()
+            self.current = 0
+            self.current_worker_n += 1
+            if self.current_worker_n < self.num_worker:
+                self.writer = self.open()
 
     def make_fileline_list(self):
         for _ in range(self.num_worker):

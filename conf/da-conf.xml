@@ -53,8 +53,12 @@
         <value>jTf6XrqcYX1SAhv9JUPq+w==</value>
     </property>
     <property>
-        <name>distribute_instances</name>
+        <name>text_distribute_instances</name>
         <value>100000</value>
+    </property>
+    <property>
+        <name>image_distribute_instances</name>
+        <value>4096</value>
     </property>
     <property>
         <name>worker_waiting_timeout</name>
