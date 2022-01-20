@@ -37,7 +37,7 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         self.job_info = self.load_job_info(job_id, job_idx)
         self.logger.info(str(self.job_info))
 
-        self.loader = DataLoaderFactory.make_data_loader(
+        self.loader = DataLoaderFactory.create(
             self.job_type, self.job_info, job_idx,
             self.storage_sftp_manager.get_client(),
             self.mrms_sftp_manager.get_client()

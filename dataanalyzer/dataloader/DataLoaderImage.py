@@ -19,17 +19,30 @@ from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 class DataLoaderImage(DataLoader):
     def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
         DataLoader.__init__(self, job_info, sftp_client, mrms_sftp_client)
-        self.num_worker = self.determine_n_workers(self.job_info.get_instances())
-        self.data_dist = DataDistributorImage(job_info, self.num_worker)
+        self.data_dist = DataDistributorImage(self.job_info, self.num_worker)
         self.data_dist.initialize(mrms_sftp_client)
 
-    @staticmethod
-    def determine_n_workers(instances):
-        n_workers = int(instances / Constants.DISTRIBUTE_INSTANCES_IMAGE)
-        if instances % Constants.DISTRIBUTE_INSTANCES_IMAGE == 0:
-            return n_workers
-        else:
-            return n_workers + 1
+    def determine_n_workers(self):
+        try:
+            instances = self.job_info.get_instances()
+            n_workers = int((instances * self._get_pixels()) / (Constants.DISTRIBUTE_INSTANCES_IMAGE * 1024 * 1024))
+            if instances % Constants.DISTRIBUTE_INSTANCES_IMAGE == 0:
+                return n_workers
+            else:
+                return n_workers + 1
+        except Exception:
+            return DataLoader.determine_n_workers(self)
+
+    def _get_pixels(self) -> int:
+        f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
+        idx = 0
+        pixels = 0
+        while True:
+            line = f.readline()
+            json_data = json.loads(line)
+            pixels = int(json_data.get("img_width")) * int(json_data.get("img_height"))
+            break
+        return pixels
 
     def load(self) -> None:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")

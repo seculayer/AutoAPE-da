@@ -13,7 +13,7 @@ from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 
 
-class DataDistributor(object):
+class DataDistributorTable(object):
     def __init__(self, job_info: DAJobInfo, num_worker=1):
         self.logger = Common.LOGGER.get_logger()
 

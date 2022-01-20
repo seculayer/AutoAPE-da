@@ -20,7 +20,10 @@ class DataLoader(object):
         self.sftp_client: PySFTPClient = sftp_client
         self.mrms_sftp_client: PySFTPClient = mrms_sftp_client
         self.dataset_meta: DatasetMetaAbstract = DatasetMetaAbstract()
-        self.num_worker: int = 1
+        self.num_worker = self.determine_n_workers()
+
+    def determine_n_workers(self):
+        return 1
 
     def load(self):
         raise NotImplementedError

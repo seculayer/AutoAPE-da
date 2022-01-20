@@ -8,13 +8,13 @@ from typing import Dict
 import paramiko
 
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.dataloader.distributor.DataDistributor import DataDistributor
+from dataanalyzer.dataloader.distributor.DataDistributorTable import DataDistributorTable
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 
-class DataDistributorImage(DataDistributor):
+class DataDistributorImage(DataDistributorTable):
     def __init__(self, job_info: DAJobInfo, num_worker=1):
-        DataDistributor.__init__(self, job_info, num_worker)
+        DataDistributorTable.__init__(self, job_info, num_worker)
 
     def write_image(self, data: Dict, buffer):
         filename = data.get("file_conv_nm")

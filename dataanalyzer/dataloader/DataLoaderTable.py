@@ -7,7 +7,7 @@ from typing import Dict, List
 
 from dataanalyzer.analyzer.TableDatasetMetaChief import TableDatasetMetaChief
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.dataloader.distributor.DataDistributor import DataDistributor
+from dataanalyzer.dataloader.distributor.DataDistributorTable import DataDistributorTable
 from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
@@ -16,17 +16,19 @@ from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
 class DataLoaderTable(DataLoader):
     def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
         DataLoader.__init__(self, job_info, sftp_client, mrms_sftp_client)
-        self.num_worker = self.determine_n_workers(self.job_info.get_instances())
-        self.data_dist = DataDistributor(job_info, self.num_worker)
+        self.data_dist = DataDistributorTable(job_info, self.num_worker)
         self.data_dist.initialize(mrms_sftp_client)
 
-    @staticmethod
-    def determine_n_workers(instances):
-        n_workers = int(instances / Constants.DISTRIBUTE_INSTANCES_TABLE)
-        if instances % Constants.DISTRIBUTE_INSTANCES_TABLE == 0:
-            return n_workers
-        else:
-            return n_workers + 1
+    def determine_n_workers(self):
+        try:
+            instances = self.job_info.get_instances()
+            n_workers = int(instances / Constants.DISTRIBUTE_INSTANCES_TABLE)
+            if instances % Constants.DISTRIBUTE_INSTANCES_TABLE == 0:
+                return n_workers
+            else:
+                return n_workers + 1
+        except Exception:
+            return DataLoader.determine_n_workers(self)
 
     def load(self) -> None:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")

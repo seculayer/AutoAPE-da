@@ -58,7 +58,8 @@
     </property>
     <property>
         <name>image_distribute_instances</name>
-        <value>4096</value>
+        <value>1024</value>
+        <description>MB</description>
     </property>
     <property>
         <name>worker_waiting_timeout</name>
