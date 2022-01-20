@@ -42,6 +42,7 @@ class DataLoaderImage(DataLoader):
             json_data = json.loads(line)
             pixels = int(json_data.get("img_width")) * int(json_data.get("img_height"))
             break
+        f.close()
         return pixels
 
     def load(self) -> None:
