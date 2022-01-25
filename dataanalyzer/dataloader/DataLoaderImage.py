@@ -24,12 +24,12 @@ class DataLoaderImage(DataLoader):
 
     def determine_n_workers(self):
         try:
-            instances = self.job_info.get_instances()
-            n_workers = int((instances * self._get_pixels()) / (Constants.DISTRIBUTE_INSTANCES_IMAGE * 1024 * 1024))
-            if instances % Constants.DISTRIBUTE_INSTANCES_IMAGE == 0:
-                return n_workers
-            else:
-                return n_workers + 1
+            instances = self.job_info.get_instances() * self._get_pixels()
+            n_workers = int(instances / Constants.DISTRIBUTE_INSTANCES_IMAGE)
+            if int(instances % Constants.DISTRIBUTE_INSTANCES_IMAGE) != 0:
+                n_workers += 1
+            self.logger.info(f"n_worker : {n_workers}")
+            return n_workers
         except Exception:
             return DataLoader.determine_n_workers(self)
 

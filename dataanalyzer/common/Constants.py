@@ -56,7 +56,7 @@ class Constants(metaclass=Singleton):
     JOB_TYPE_CHIEF = "chief"
     JOB_TYPE_WORKER = "worker"
     DISTRIBUTE_INSTANCES_TABLE = int(_CONFIG.get("text_distribute_instances", "100000"))
-    DISTRIBUTE_INSTANCES_IMAGE = int(_CONFIG.get("image_distribute_instances", "1024"))
+    DISTRIBUTE_INSTANCES_IMAGE = int(_CONFIG.get("image_distribute_instances", "1024")) * 1024 * 1024
 
     # FIELD TAG
     TAG_CATEGORY = "Categorical"
