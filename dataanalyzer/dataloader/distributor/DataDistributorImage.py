@@ -2,12 +2,8 @@
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
-import json
 from typing import Dict
 
-import paramiko
-
-from dataanalyzer.common.Constants import Constants
 from dataanalyzer.dataloader.distributor.DataDistributorTable import DataDistributorTable
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 

@@ -5,16 +5,15 @@
 
 from typing import List
 
-from dataanalyzer.common.Constants import Constants
 from dataanalyzer.common.Common import Common
-from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
+from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class SFTPClientManager(object):
     # class : SFTPClientManager
 
     def __init__(self, service: str, username: str, password: str):
-        self.logger = Common.LOGGER.get_logger()
+        self.logger = Common.LOGGER.getLogger()
         self.service: List[str] = service.split(":")
         self.username = username
         self.password = password

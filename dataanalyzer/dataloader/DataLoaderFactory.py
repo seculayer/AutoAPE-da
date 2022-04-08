@@ -9,7 +9,7 @@ from dataanalyzer.dataloader.DataLoaderImageWorker import DataLoaderImageWorker
 from dataanalyzer.dataloader.DataLoaderTable import DataLoaderTable
 from dataanalyzer.dataloader.DataLoaderTableWorker import DataLoaderTableWorker
 from dataanalyzer.info.DAJobInfo import DAJobInfo
-from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
+from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class DataLoaderFactory(object):

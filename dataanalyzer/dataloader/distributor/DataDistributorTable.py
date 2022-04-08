@@ -10,12 +10,12 @@ import paramiko
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
-from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
+from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class DataDistributorTable(object):
     def __init__(self, job_info: DAJobInfo, num_worker=1):
-        self.logger = Common.LOGGER.get_logger()
+        self.logger = Common.LOGGER.getLogger()
 
         self.job_info: DAJobInfo = job_info
         self.num_worker: int = num_worker

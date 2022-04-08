@@ -4,14 +4,13 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 from typing import List
 
-from dataanalyzer.info.JobInfo import JobInfo
-from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
+from pycmmn.sftp.PySFTPClient import PySFTPClient
+from pycmmn.utils.JSONUtils import JSONUtils
 
 
-class DAJobInfo(JobInfo):
+class DAJobInfo(object):
     def __init__(self, sftp_client: PySFTPClient, filename: str):
-        JobInfo.__init__(self, sftp_client, filename)
-
+        self.job_info_dict = JSONUtils.read_sftp_json_from_file(sftp_client, filename)
         self.job_id = self.job_info_dict.get("dataset_id")
         self.dataset_format = self.job_info_dict.get("dataset_format")
         self.file_path = self.job_info_dict.get("format_json").get("file_path")

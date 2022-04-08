@@ -3,14 +3,14 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import json
-from typing import Dict, List
+from typing import Dict
 
 from dataanalyzer.analyzer.TableDatasetMetaChief import TableDatasetMetaChief
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.dataloader.distributor.DataDistributorTable import DataDistributorTable
 from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.info.DAJobInfo import DAJobInfo
-from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
+from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class DataLoaderTable(DataLoader):
@@ -59,12 +59,3 @@ class DataLoaderTable(DataLoader):
             "meta": self.dataset_meta.get_meta_list(),
             "dataset_meta": self.dataset_meta.get_meta_dataset()
         }
-
-    def global_meta(self) -> None:
-        # load local meta info
-        local_meta_list: List = list()
-        for idx in range(self.get_num_worker()):
-            local_meta_list.append(self.load_local_meta(idx))
-
-        self.dataset_meta.calculate_global_meta(local_meta_list)
-        self.write_meta(f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_META_{self.job_info.get_job_id()}.info")

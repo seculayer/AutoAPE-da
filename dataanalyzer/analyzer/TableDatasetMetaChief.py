@@ -118,7 +118,8 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
             return Constants.FIELD_TYPE_STRING
         return Constants.FIELD_TYPE_NULL
 
-    def calculate_field_tag(self, meta) -> List[str]:
+    @staticmethod
+    def calculate_field_tag(meta) -> List[str]:
         tag_list = list()
         # Categorical
         if meta.get("statistics").get("unique", None):

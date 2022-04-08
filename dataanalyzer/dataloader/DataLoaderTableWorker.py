@@ -9,7 +9,7 @@ from dataanalyzer.analyzer.TableDatasetMetaWorker import TableDatasetMetaWorker
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.info.DAJobInfo import DAJobInfo
-from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
+from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class DataLoaderTableWorker(DataLoader):

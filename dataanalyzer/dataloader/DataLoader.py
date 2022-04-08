@@ -4,18 +4,18 @@
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import json
 from logging import Logger
-from typing import Dict
+from typing import Dict, List
 
 from dataanalyzer.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
-from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
+from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class DataLoader(object):
     def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
-        self.logger: Logger = Common.LOGGER.get_logger()
+        self.logger: Logger = Common.LOGGER.getLogger()
         self.job_info: DAJobInfo = job_info
         self.sftp_client: PySFTPClient = sftp_client
         self.mrms_sftp_client: PySFTPClient = mrms_sftp_client
@@ -32,7 +32,13 @@ class DataLoader(object):
         raise NotImplementedError
 
     def global_meta(self) -> None:
-        raise NotImplementedError
+        # load local meta info
+        local_meta_list: List = list()
+        for idx in range(self.get_num_worker()):
+            local_meta_list.append(self.load_local_meta(idx))
+
+        self.dataset_meta.calculate_global_meta(local_meta_list)
+        self.write_meta(f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_META_{self.job_info.get_job_id()}.info")
 
     def get_num_worker(self) -> int:
         return self.num_worker

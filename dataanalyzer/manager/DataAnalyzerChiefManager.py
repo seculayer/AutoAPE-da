@@ -3,6 +3,7 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import requests as rq
+from typing import Union
 
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
@@ -10,18 +11,18 @@ from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.dataloader.DataLoaderFactory import DataLoaderFactory
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.manager.SFTPClientManager import SFTPClientManager
-from dataanalyzer.util.Singleton import Singleton
-from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
+from pycmmn.Singleton import Singleton
+from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class DataAnalyzerChiefManager(object, metaclass=Singleton):
     # class : DataAnalyzerChiefManager
     def __init__(self):
-        self.logger = Common.LOGGER.get_logger()
-        self.mrms_sftp_manager: SFTPClientManager = None
-        self.storage_sftp_manager: SFTPClientManager = None
-        self.job_info: DAJobInfo = None
-        self.loader: DataLoader = None
+        self.logger = Common.LOGGER.getLogger()
+        self.mrms_sftp_manager: Union[SFTPClientManager, None] = None
+        self.storage_sftp_manager: Union[SFTPClientManager, None] = None
+        self.job_info: Union[DAJobInfo, None] = None
+        self.loader: Union[DataLoader, None] = None
         self.job_type = Constants.JOB_TYPE_CHIEF
         self.rest_root_url = f"http://{Constants.MRMS_SVC}:{Constants.MRMS_REST_PORT}"
 
@@ -34,7 +35,7 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
             "{}:{}".format(Constants.STORAGE_SVC, Constants.STORAGE_SFTP_PORT),
             Constants.SSH_USER, Constants.SSH_PASSWD)
 
-        self.job_info = self.load_job_info(job_id, job_idx)
+        self.job_info = self.load_job_info(job_id)
         self.logger.info(str(self.job_info))
 
         self.loader = DataLoaderFactory.create(
@@ -44,7 +45,7 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         )
         self.logger.info("DataAnalyzerManager initialized.")
 
-    def load_job_info(self, job_id: str, job_idx: str):
+    def load_job_info(self, job_id: str):
         filename = Constants.DIR_JOB_PATH + f"/{job_id}/DA_{job_id}.job"
         self.logger.info("load file name : {}".format(filename))
         return DAJobInfo(self.mrms_sftp_manager.get_client(), filename)
@@ -96,4 +97,4 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
 
 
 if __name__ == '__main__':
-    dam = DataAnalyzerChiefManager("ID", "0")
+    dam = DataAnalyzerChiefManager()

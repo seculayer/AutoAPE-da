@@ -14,6 +14,8 @@ from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 
 class DatasetMetaAbstract(object):
+    LOCAL_KEYS = []
+
     def __init__(self):
         self.n_rows = 0
         self.meta_dataset = dict()
@@ -113,3 +115,6 @@ class DatasetMetaAbstract(object):
                     result_dict = self.meta_func_list[idx].get(_).to_dict()
                     meta.get("statistics").update(result_dict)
         return self.meta_list
+
+    def calculate_global_meta(self, local_meta_list: List[List[Dict]]) -> None:
+        pass

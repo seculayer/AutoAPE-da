@@ -3,7 +3,7 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import json
-from typing import Dict, List
+from typing import Dict
 
 import numpy as np
 
@@ -12,8 +12,8 @@ from dataanalyzer.common.Constants import Constants
 from dataanalyzer.dataloader.DataLoader import DataLoader
 from dataanalyzer.dataloader.distributor.DataDistributorImage import DataDistributorImage
 from dataanalyzer.info.DAJobInfo import DAJobInfo
-from dataanalyzer.util.ImageUtils import ImageUtils
-from dataanalyzer.util.sftp.PySFTPClient import PySFTPClient
+from pycmmn.utils.ImageUtils import ImageUtils
+from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class DataLoaderImage(DataLoader):
@@ -35,8 +35,7 @@ class DataLoaderImage(DataLoader):
 
     def _get_pixels(self) -> int:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
-        idx = 0
-        pixels = 0
+
         while True:
             line = f.readline()
             json_data = json.loads(line)
@@ -95,12 +94,3 @@ class DataLoaderImage(DataLoader):
             "meta": self.dataset_meta.get_meta_list(),
             "dataset_meta": self.dataset_meta.get_meta_dataset()
         }
-
-    def global_meta(self) -> None:
-        # load local meta info
-        local_meta_list: List = list()
-        for idx in range(self.get_num_worker()):
-            local_meta_list.append(self.load_local_meta(idx))
-
-        self.dataset_meta.calculate_global_meta(local_meta_list)
-        self.write_meta(f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_META_{self.job_info.get_job_id()}.info")
