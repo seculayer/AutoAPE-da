@@ -2,8 +2,8 @@ FROM registry.seculayer.com:31500/ape/python-base:py3.7 as builder
 
 ARG app="/opt/app"
 # TODO : Must set user_name/pw first
-ARG git_user_name=""
-ARG git_user_pw=""
+ARG git_user_name="manki.baek"
+ARG git_user_pw="!aksen23"
 
 RUN pip3.7 install wheel
 RUN git config --global user.name "$git_user_name"
@@ -12,16 +12,16 @@ RUN git config --global http.sslVerify false
 
 # pycmmn setup
 # specific branch
-# RUN git clone -b SLCAI-54-automl-module https://$git_user_name:$git_user_pw@ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git $app/pycmmn
-RUN git clone https://$git_user_name:$git_user_pw@ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git $app/pycmmn
+RUN git clone -b SLCAI-54-automl-module https://$git_user_name:$git_user_pw@ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git $app/pycmmn
+#RUN git clone https://$git_user_name:$git_user_pw@ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git $app/pycmmn
 WORKDIR $app/pycmmn
 RUN pip3.7 install -r requirements.txt -t $app/pycmmn/lib
 RUN python3.7 setup.py bdist_wheel
 
 # data-analyzer setup
 # specific branch
-# RUN git clone -b SLCAI-54-automl-module https://$git_user_name:$git_user_pw@ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-da.git $app/da
-RUN git clone https://$git_user_name:$git_user_pw@ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-da.git $app/da
+RUN git clone -b SLCAI-54-automl-module https://$git_user_name:$git_user_pw@ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-da.git $app/da
+#RUN git clone https://$git_user_name:$git_user_pw@ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-da.git $app/da
 WORKDIR $app/da
 RUN pip3.7 install -r requirements.txt -t $app/da/lib
 RUN python3.7 setup.py bdist_wheel
