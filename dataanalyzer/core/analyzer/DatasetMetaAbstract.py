@@ -117,4 +117,4 @@ class DatasetMetaAbstract(object):
         return self.meta_list
 
     def calculate_global_meta(self, local_meta_list: List[List[Dict]]) -> None:
-        pass
+        return None

@@ -3,7 +3,7 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 
-class DatasetMetaAbstract(object):
+class DatasetMetaFeatureAbstract(object):
     def __init__(self):
         pass
 
