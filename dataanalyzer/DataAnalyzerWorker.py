@@ -6,7 +6,7 @@
 # ---- python base packages
 
 from dataanalyzer.common.Common import Common
-from dataanalyzer.core.manager import DataAnalyzerWorkerManager
+from dataanalyzer.core.manager.DataAnalyzerWorkerManager import DataAnalyzerWorkerManager
 from pycmmn.KubePodSafetyTermThread import KubePodSafetyTermThread
 from pycmmn.Singleton import Singleton
 

@@ -5,10 +5,10 @@
 import json
 from typing import Dict
 
-from dataanalyzer.core.analyzer import TableDatasetMetaChief
+from dataanalyzer.core.analyzer.TableDatasetMetaChief import TableDatasetMetaChief
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.core.dataloader.distributor import DataDistributorTable
-from dataanalyzer.dataloader.DataLoader import DataLoader
+from dataanalyzer.core.dataloader.distributor.DataDistributorTable import DataDistributorTable
+from dataanalyzer.core.dataloader.DataLoader import DataLoader
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from pycmmn.sftp.PySFTPClient import PySFTPClient
 

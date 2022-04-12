@@ -9,7 +9,7 @@ from datetime import datetime
 
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.core.manager import DataAnalyzerChiefManager
+from dataanalyzer.core.manager.DataAnalyzerChiefManager import DataAnalyzerChiefManager
 from pycmmn.KubePodSafetyTermThread import KubePodSafetyTermThread
 from pycmmn.Singleton import Singleton
 

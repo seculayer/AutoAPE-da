@@ -5,9 +5,9 @@
 import json
 from typing import Dict
 
-from dataanalyzer.core.analyzer import TableDatasetMetaWorker
+from dataanalyzer.core.analyzer.TableDatasetMetaWorker import TableDatasetMetaWorker
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.dataloader.DataLoader import DataLoader
+from dataanalyzer.core.dataloader.DataLoader import DataLoader
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from pycmmn.sftp.PySFTPClient import PySFTPClient
 

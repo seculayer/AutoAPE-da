@@ -4,7 +4,7 @@
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 from typing import Dict
 
-from dataanalyzer.core.dataloader.distributor import DataDistributorTable
+from dataanalyzer.core.dataloader.distributor.DataDistributorTable import DataDistributorTable
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 

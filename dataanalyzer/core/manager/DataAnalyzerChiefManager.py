@@ -7,8 +7,8 @@ from typing import Union
 
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.dataloader.DataLoader import DataLoader
-from dataanalyzer.dataloader.DataLoaderFactory import DataLoaderFactory
+from dataanalyzer.core.dataloader.DataLoader import DataLoader
+from dataanalyzer.core.dataloader.DataLoaderFactory import DataLoaderFactory
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from dataanalyzer.core.manager.SFTPClientManager import SFTPClientManager
 from pycmmn.Singleton import Singleton

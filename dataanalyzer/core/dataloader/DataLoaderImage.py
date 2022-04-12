@@ -7,10 +7,10 @@ from typing import Dict
 
 import numpy as np
 
-from dataanalyzer.core.analyzer import ImageDatasetMetaChief
+from dataanalyzer.core.analyzer.ImageDatasetMetaChief import ImageDatasetMetaChief
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.dataloader.DataLoader import DataLoader
-from dataanalyzer.core.dataloader.distributor import DataDistributorImage
+from dataanalyzer.core.dataloader.DataLoader import DataLoader
+from dataanalyzer.core.dataloader.distributor.DataDistributorImage import DataDistributorImage
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from pycmmn.utils.ImageUtils import ImageUtils
 from pycmmn.sftp.PySFTPClient import PySFTPClient

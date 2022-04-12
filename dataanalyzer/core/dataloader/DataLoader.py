@@ -6,7 +6,7 @@ import json
 from logging import Logger
 from typing import Dict, List
 
-from dataanalyzer.core.analyzer import DatasetMetaAbstract
+from dataanalyzer.core.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
