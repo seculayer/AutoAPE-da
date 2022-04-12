@@ -6,7 +6,7 @@ from typing import Dict, List
 
 import numpy as np
 
-from dataanalyzer.core.analyzer import DatasetMetaAbstract
+from dataanalyzer.core.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 

@@ -4,7 +4,7 @@
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 from typing import Dict, List
 
-from dataanalyzer.core.analyzer import DatasetMetaAbstract
+from dataanalyzer.core.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
@@ -30,7 +30,7 @@ class ImageDatasetMetaWorker(DatasetMetaAbstract):
 
     def apply(self, data):
         for idx, fd in enumerate(self.meta_list):
-            # result, f_type = DatasetMetaAbstract._field_type(data.get(fd.get("field_nm")))
+            # result, f_type = DatasetMetaAbstract.field_type(data.get(fd.get("field_nm")))
             pass
 
     def calculate(self):

@@ -4,7 +4,7 @@
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 from typing import Dict, List
 
-from dataanalyzer.core.analyzer import DatasetMetaAbstract
+from dataanalyzer.core.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.core.analyzer.dataset.common.NumFeature import NumFeature
 from dataanalyzer.core.analyzer.dataset.common.NumInstance import NumInstance
 from dataanalyzer.core.analyzer.table.numeric.GlobalStatistics import GlobalStatistics
@@ -50,7 +50,7 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
 
     def _apply_field_meta(self, data) -> None:
         for idx, field_nm in enumerate(self.field_list):
-            result, f_type = DatasetMetaAbstract._field_type(data.get(field_nm))
+            result, f_type = DatasetMetaAbstract.field_type(data.get(field_nm))
             self.meta_list[idx].get("type_stat")[f_type] += 1
 
             if f_type is not Constants.FIELD_TYPE_NULL:

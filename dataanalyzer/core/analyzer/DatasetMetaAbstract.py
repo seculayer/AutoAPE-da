@@ -96,7 +96,7 @@ class DatasetMetaAbstract(object):
         return self.meta_dataset
 
     @staticmethod
-    def _field_type(data: str):
+    def field_type(data: str):
         if len(data) == 0:
             return None, Constants.FIELD_TYPE_NULL
         try:
