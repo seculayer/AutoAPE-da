@@ -10,7 +10,7 @@ from dataanalyzer.common.Constants import Constants
 from dataanalyzer.core.dataloader.DataLoader import DataLoader
 from dataanalyzer.core.dataloader.DataLoaderFactory import DataLoaderFactory
 from dataanalyzer.info.DAJobInfo import DAJobInfo
-from dataanalyzer.core.manager.SFTPClientManager import SFTPClientManager
+from pycmmn.sftp.SFTPClientManager import SFTPClientManager
 from pycmmn.Singleton import Singleton
 from pycmmn.sftp.PySFTPClient import PySFTPClient
 
@@ -29,11 +29,11 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
     def initialize(self, job_id: str, job_idx: str):
         self.mrms_sftp_manager = SFTPClientManager(
             "{}:{}".format(Constants.MRMS_SVC, Constants.MRMS_SFTP_PORT),
-            Constants.SSH_USER, Constants.SSH_PASSWD)
+            Constants.SSH_USER, Constants.SSH_PASSWD, self.logger)
 
         self.storage_sftp_manager = SFTPClientManager(
             "{}:{}".format(Constants.STORAGE_SVC, Constants.STORAGE_SFTP_PORT),
-            Constants.SSH_USER, Constants.SSH_PASSWD)
+            Constants.SSH_USER, Constants.SSH_PASSWD, self.logger)
 
         self.job_info = self.load_job_info(job_id)
         self.logger.info(str(self.job_info))
