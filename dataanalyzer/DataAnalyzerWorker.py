@@ -6,16 +6,16 @@
 # ---- python base packages
 
 from dataanalyzer.common.Common import Common
-from dataanalyzer.manager.DataAnalyzerWorkerManager import DataAnalyzerWorkerManager
-from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
-from dataanalyzer.util.Singleton import Singleton
+from dataanalyzer.core.manager.DataAnalyzerWorkerManager import DataAnalyzerWorkerManager
+from pycmmn.KubePodSafetyTermThread import KubePodSafetyTermThread
+from pycmmn.Singleton import Singleton
 
 
 # class : DataAnalyzer
 class DataAnalyzerWorker(KubePodSafetyTermThread, metaclass=Singleton):
     def __init__(self, job_id: str, job_idx: str):
         KubePodSafetyTermThread.__init__(self)
-        self.logger = Common.LOGGER.get_logger()
+        self.logger = Common.LOGGER.getLogger()
 
         self.da_manager = DataAnalyzerWorkerManager()
         try:

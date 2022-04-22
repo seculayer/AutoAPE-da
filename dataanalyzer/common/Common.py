@@ -4,9 +4,9 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 
 # ---- automl packages
-from dataanalyzer.util.Singleton import Singleton
-from dataanalyzer.util.logger.MPLogger import MPLogger
-from dataanalyzer.util.FileUtils import FileUtils
+from pycmmn.Singleton import Singleton
+from pycmmn.logger.MPLogger import MPLogger
+from pycmmn.utils.FileUtils import FileUtils
 from dataanalyzer.common.Constants import Constants
 
 
@@ -17,5 +17,8 @@ class Common(metaclass=Singleton):
     FileUtils.mkdir(Constants.DIR_LOG)
 
     # LOGGER
-    LOGGER: MPLogger = MPLogger(log_dir=Constants.DIR_LOG, log_level=Constants.LOG_LEVEL,
-                      log_name=Constants.LOG_NAME)
+    LOGGER: MPLogger = MPLogger(
+        log_dir=Constants.DIR_LOG,
+        log_level=Constants.LOG_LEVEL,
+        log_name=Constants.LOG_NAME
+    )

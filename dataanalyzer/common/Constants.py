@@ -3,9 +3,9 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 
-from dataanalyzer.util.Singleton import Singleton
-from dataanalyzer.util.ConfigUtils import ConfigUtils
-from dataanalyzer.util.FileUtils import FileUtils
+from pycmmn.Singleton import Singleton
+from pycmmn.utils.ConfUtils import ConfUtils
+from pycmmn.utils.FileUtils import FileUtils
 
 import os
 os.chdir(FileUtils.get_realpath(__file__) + "/../../")
@@ -14,7 +14,7 @@ os.chdir(FileUtils.get_realpath(__file__) + "/../../")
 # class : Constants
 class Constants(metaclass=Singleton):
     # load config xml file
-    _CONFIG = ConfigUtils.load(os.getcwd() + "/conf/da-conf.xml")
+    _CONFIG = ConfUtils.load(filename=os.getcwd() + "/conf/da-conf.xml")
 
     # Directories
     DIR_DATA_ROOT = _CONFIG.get("dir_data_root", "/eyeCloudAI/data")

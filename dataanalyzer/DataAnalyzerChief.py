@@ -9,16 +9,16 @@ from datetime import datetime
 
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
-from dataanalyzer.manager.DataAnalyzerChiefManager import DataAnalyzerChiefManager
-from dataanalyzer.util.KubePodSafetyTermThread import KubePodSafetyTermThread
-from dataanalyzer.util.Singleton import Singleton
+from dataanalyzer.core.manager.DataAnalyzerChiefManager import DataAnalyzerChiefManager
+from pycmmn.KubePodSafetyTermThread import KubePodSafetyTermThread
+from pycmmn.Singleton import Singleton
 
 
 # class : DataAnalyzer
 class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
     def __init__(self, job_id: str):
         KubePodSafetyTermThread.__init__(self)
-        self.logger = Common.LOGGER.get_logger()
+        self.logger = Common.LOGGER.getLogger()
 
         self.da_manager = DataAnalyzerChiefManager()
         self.job_id = job_id
