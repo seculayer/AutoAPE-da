@@ -17,6 +17,7 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
     NUMERIC_KEYS = ["basic"]
     GLOBAL_KEYS = ["global"]
     STRING_KEYS = ["word"]
+    DATE_KEYS = ["date"]
 
     def __init__(self):
         DatasetMetaAbstract.__init__(self)
@@ -59,6 +60,11 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
                     for _ in self.NUMERIC_KEYS:
                         self.meta_func_list[idx].get(_).apply(result)
 
+                # date
+                if f_type is Constants.FIELD_TYPE_DATE:
+                    for _ in self.DATE_KEYS:
+                        self.meta_func_list[idx].get(_).apply(result)
+
                 # string
                 if f_type is Constants.FIELD_TYPE_STRING:
                     for _ in self.STRING_KEYS:
@@ -78,13 +84,20 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
                     or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
                 for _ in self.STRING_KEYS:
                     del self.meta_func_list[idx][_]
+                del self.meta_func_list[idx]["date"]
 
             if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT \
                     or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
                 del self.meta_func_list[idx]["unique"]
+                del self.meta_func_list[idx]["date"]
 
             if meta.get("field_type") == Constants.FIELD_TYPE_STRING \
                     or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+                del self.meta_func_list[idx]["basic"]
+                del self.meta_func_list[idx]["date"]
+
+            if meta.get("field_type") == Constants.FIELD_TYPE_DATE \
+                or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
                 del self.meta_func_list[idx]["basic"]
 
             self._statistic_calculate(idx, meta)
@@ -109,13 +122,16 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
         ft_int = type_stat.get(Constants.FIELD_TYPE_INT)
         ft_float = type_stat.get(Constants.FIELD_TYPE_FLOAT)
         ft_string = type_stat.get(Constants.FIELD_TYPE_STRING)
+        ft_date = type_stat.get(Constants.FIELD_TYPE_DATE)
 
-        if ft_int > ft_float and ft_int > ft_string:
+        if ft_int > ft_float and ft_int > ft_string and ft_int > ft_date:
             return Constants.FIELD_TYPE_INT
-        if ft_float > ft_int and ft_float > ft_string:
+        if ft_float > ft_int and ft_float > ft_string and ft_float > ft_date:
             return Constants.FIELD_TYPE_FLOAT
-        if ft_string > ft_int and ft_string > ft_float:
+        if ft_string > ft_int and ft_string > ft_float and ft_string > ft_date:
             return Constants.FIELD_TYPE_STRING
+        if ft_date > ft_int and ft_date > ft_float and ft_date > ft_string:
+            return Constants.FIELD_TYPE_DATE
         return Constants.FIELD_TYPE_NULL
 
     @staticmethod

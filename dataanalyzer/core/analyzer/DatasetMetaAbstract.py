@@ -3,11 +3,13 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 from typing import List, Dict
+from datetime import datetime
 
 from dataanalyzer.core.analyzer.dataset.common.NumInstance import NumInstance
 from dataanalyzer.core.analyzer.image.ImageShape import ImageShape
 from dataanalyzer.core.analyzer.table.categorical.Unique import Unique
 from dataanalyzer.core.analyzer.table.numeric.BasicStatistics import BasicStatistics
+from dataanalyzer.core.analyzer.table.date.Date import Date
 from dataanalyzer.core.analyzer.table.string.Word import Word
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
@@ -43,6 +45,7 @@ class DatasetMetaAbstract(object):
                 Constants.FIELD_TYPE_INT: 0,
                 Constants.FIELD_TYPE_FLOAT: 0,
                 Constants.FIELD_TYPE_STRING: 0,
+                Constants.FIELD_TYPE_DATE: 0
             },
             "statistics": dict(),
         }
@@ -61,6 +64,7 @@ class DatasetMetaAbstract(object):
             "basic": BasicStatistics(),
             "unique": Unique(job_info.get_instances()),
             "word": Word(),
+            "date": Date()
         }
 
     @staticmethod
@@ -97,15 +101,29 @@ class DatasetMetaAbstract(object):
 
     @staticmethod
     def field_type(data: str):
+        date_format_list = ["%Y%m%d%H%M%S", "%Y%m%d%H%M", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"]
         if data is None or len(data) == 0:
             return None, Constants.FIELD_TYPE_NULL
-        try:
-            return int(data), Constants.FIELD_TYPE_INT
-        except ValueError:
+
+        date_flag = False
+        for date_format in date_format_list:
             try:
-                return float(data), Constants.FIELD_TYPE_FLOAT
+                datetime.strptime(data, date_format)
+                date_flag = True
+                break
             except ValueError:
-                return data, Constants.FIELD_TYPE_STRING
+                pass
+
+        if date_flag:
+            return data, Constants.FIELD_TYPE_DATE
+        else:
+            try:
+                return int(data), Constants.FIELD_TYPE_INT
+            except ValueError:
+                try:
+                    return float(data), Constants.FIELD_TYPE_FLOAT
+                except ValueError:
+                    return data, Constants.FIELD_TYPE_STRING
 
     def get_meta_list_for_worker(self) -> List[dict]:
         for idx, meta in enumerate(self.meta_list):
