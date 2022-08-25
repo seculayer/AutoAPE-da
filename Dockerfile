@@ -1,60 +1,45 @@
-# syntax=docker/dockerfile:1.3
-FROM registry.seculayer.com:31500/ape/python-base:py3.7 as builder
+FROM seculayer/python:3.7 AS builder
+ARG APP_DIR="/opt/app/"
+ARG POETRY_VERSION=1.1.13
 
-ARG app="/opt/app"
+ENV POETRY_VIRTUALENVS_IN_PROJECT=1 \
+    PATH="/root/.local/bin:$PATH"
 
-RUN pip3.7 install wheel && git config --global http.sslVerify false
+RUN --mount=type=cache,target=/root/.cache/pip pip install install pipx
+RUN pipx ensurepath
+RUN pipx install "poetry==$POETRY_VERSION"
 
-# pycmmn setup
-# specific branch
-RUN --mount=type=secret,id=token git clone --depth=5 -c http.extraHeader="Authorization: Bearer $(cat /run/secrets/token)" -b SLCAI-54-automl-module https://ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git $app/pycmmn
-#RUN --mount=type=secret,id=token git clone --depth=5 -c http.extraHeader="Authorization: Bearer $(cat /run/secrets/token)" https://ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-pycmmn.git $app/pycmmn
-WORKDIR $app/pycmmn
-RUN pip3.7 install -r requirements.txt -t $app/pycmmn/lib && python3.7 setup.py bdist_wheel
+WORKDIR ${APP_DIR}
 
-# data-analyzer setup
-# specific branch
-RUN --mount=type=secret,id=token git clone --depth=5 -c http.extraHeader="Authorization: Bearer $(cat /run/secrets/token)" -b SLCAI-54-automl-module https://ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-da.git $app/da
-#RUN --mount=type=secret,id=token git clone --depth=5 -c http.extraHeader="Authorization: Bearer $(cat /run/secrets/token)" https://ssdlc-bitbucket.seculayer.com:8443/scm/slaism/autoape-da.git $app/da
-WORKDIR $app/da
-RUN pip3.7 install -r requirements.txt -t $app/da/lib && python3.7 setup.py bdist_wheel
+# Copy dependencies files
+COPY pyproject.toml poetry.lock ${APP_DIR}
+
+RUN --mount=type=secret,id=gitconfig,target=/root/.gitconfig,required=true \
+    --mount=type=secret,id=cert,required=true \
+    # --mount=type=cache,target=/root/.cache/pypoetry/cache \
+    # --mount=type=cache,target=/root/.cache/pypoetry/artifacts \
+    poetry install --no-dev --no-root --no-interaction --no-ansi
 
 
-FROM registry.seculayer.com:31500/ape/python-base:py3.7 as app
-
-ARG app="/opt/app"
+FROM seculayer/python:3.7 AS app
+ARG APP_DIR="/opt/app/"
+ARG CLOUD_AI_DIR="/eyeCloudAI/app/ape/da/"
+ENV CLOUD_AI_DIR ${CLOUD_AI_DIR}
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 
-# pycmmn install
-RUN mkdir -p /eyeCloudAI/app/ape/pycmmn
-WORKDIR /eyeCloudAI/app/ape/pycmmn
-
-COPY --from=builder "$app/pycmmn/lib" /eyeCloudAI/app/ape/pycmmn/lib
-COPY --from=builder "$app/pycmmn/dist/pycmmn-1.0.0-py3-none-any.whl" \
-        /eyeCloudAI/app/ape/pycmmn/pycmmn-1.0.0-py3-none-any.whl
-
-RUN pip3.7 install /eyeCloudAI/app/ape/pycmmn/pycmmn-1.0.0-py3-none-any.whl --no-dependencies  \
-    -t /eyeCloudAI/app/ape/pycmmn/ \
-    && rm /eyeCloudAI/app/ape/pycmmn/pycmmn-1.0.0-py3-none-any.whl
-
-# data-analyzer install
-RUN mkdir -p /eyeCloudAI/app/ape/da
-WORKDIR /eyeCloudAI/app/ape/da
-
-COPY ./da.sh /eyeCloudAI/app/ape/da
-RUN chmod +x /eyeCloudAI/app/ape/da/da.sh
-
-COPY --from=builder "$app/da/lib" /eyeCloudAI/app/ape/da/lib
-COPY --from=builder "$app/da/dist/dataanalyzer-1.0.0-py3-none-any.whl" \
-        /eyeCloudAI/app/ape/da/dataanalyzer-1.0.0-py3-none-any.whl
-
-RUN pip3.7 install /eyeCloudAI/app/ape/da/dataanalyzer-1.0.0-py3-none-any.whl --no-dependencies  \
-    -t /eyeCloudAI/app/ape/da/ \
-    && rm /eyeCloudAI/app/ape/da/dataanalyzer-1.0.0-py3-none-any.whl
+RUN mkdir -p ${CLOUD_AI_DIR}
+WORKDIR ${CLOUD_AI_DIR}
 
 RUN groupadd -g 1000 aiuser
 RUN useradd -r -u 1000 -g aiuser aiuser
 RUN chown -R aiuser:aiuser /eyeCloudAI
 USER aiuser
+
+COPY --chown=aiuser:aiuser --from=builder ${APP_DIR}/.venv ${CLOUD_AI_DIR}/.venv
+COPY --chown=aiuser:aiuser dataanalyzer ${CLOUD_AI_DIR}/dataanalyzer
+COPY --chown=aiuser:aiuser da.sh ${CLOUD_AI_DIR}
+RUN chmod +x ${CLOUD_AI_DIR}/da.sh
+
+ENV PATH="${CLOUD_AI_DIR}/.venv/bin:$PATH"
 
 CMD ["/eyeCloudAI/app/ape/da/da.sh", "0", "chief", "0"]
