@@ -9,7 +9,7 @@ if [ -x "$APP_PATH/da/.venv/bin/python3" ]
 then
   PYTHON_BIN="$APP_PATH/da/.venv/bin/python3"
 else
-  PYTHON_BIN="$(command -v python3)"
+  PYTHON_BIN="$(command -v python3.7)"
   export PYTHONPATH=$PYTHONPATH:$APP_PATH/da/lib:$APP_PATH/da
   export PYTHONPATH=$PYTHONPATH:$APP_PATH/pycmmn/lib:$APP_PATH/pycmmn
 fi
