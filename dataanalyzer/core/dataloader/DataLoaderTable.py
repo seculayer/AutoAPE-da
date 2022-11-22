@@ -31,7 +31,11 @@ class DataLoaderTable(DataLoader):
             return DataLoader.determine_n_workers(self)
 
     def load(self) -> None:
-        f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
+        try:
+            f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
+        except Exception as e:
+            self.logger.error("file_path : {}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()))
+            self.logger.error(e, exc_info=True)
         self.dataset_meta: TableDatasetMetaChief = TableDatasetMetaChief()
         self.dataset_meta.initialize(self.job_info)
 

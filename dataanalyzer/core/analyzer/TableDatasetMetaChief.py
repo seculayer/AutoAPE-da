@@ -79,26 +79,26 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
         for idx, meta in enumerate(self.meta_list):
             meta["field_type"] = self.determine_type(meta.get("type_stat"))
 
-            if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT \
-                    or meta.get("field_type") == Constants.FIELD_TYPE_INT \
-                    or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+            if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT:
+                for _ in self.STRING_KEYS:
+                    del self.meta_func_list[idx][_]
+                del self.meta_func_list[idx]["unique"]
+                del self.meta_func_list[idx]["date"]
+            elif meta.get("field_type") == Constants.FIELD_TYPE_INT:
                 for _ in self.STRING_KEYS:
                     del self.meta_func_list[idx][_]
                 del self.meta_func_list[idx]["date"]
-
-            if meta.get("field_type") == Constants.FIELD_TYPE_FLOAT \
-                    or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+            elif meta.get("field_type") == Constants.FIELD_TYPE_STRING:
+                del self.meta_func_list[idx]["basic"]
+                del self.meta_func_list[idx]["date"]
+            elif meta.get("field_type") == Constants.FIELD_TYPE_DATE:
+                del self.meta_func_list[idx]["basic"]
                 del self.meta_func_list[idx]["unique"]
-                del self.meta_func_list[idx]["date"]
-
-            if meta.get("field_type") == Constants.FIELD_TYPE_STRING \
-                    or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+            elif meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+                for _ in self.STRING_KEYS:
+                    del self.meta_func_list[idx][_]
                 del self.meta_func_list[idx]["basic"]
-                del self.meta_func_list[idx]["date"]
-
-            if meta.get("field_type") == Constants.FIELD_TYPE_DATE \
-                or meta.get("field_type") == Constants.FIELD_TYPE_NULL:
-                del self.meta_func_list[idx]["basic"]
+                del self.meta_func_list[idx]["unique"]
 
             self._statistic_calculate(idx, meta)
 

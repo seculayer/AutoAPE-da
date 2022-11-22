@@ -22,7 +22,7 @@ class DAJobInfo(object):
         return self.dataset_format
 
     def get_filename(self) -> str:
-        return self.job_info_dict.get("format_json").get("file_name")
+        return self.job_info_dict.get("format_json").get("file_nm")
 
     def get_field_list(self) -> List:
         return self.job_info_dict.get("format_json").get("field_list")
