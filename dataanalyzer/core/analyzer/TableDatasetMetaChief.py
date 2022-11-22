@@ -94,7 +94,8 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
             elif meta.get("field_type") == Constants.FIELD_TYPE_DATE:
                 del self.meta_func_list[idx]["basic"]
                 del self.meta_func_list[idx]["unique"]
-            elif meta.get("field_type") == Constants.FIELD_TYPE_NULL:
+            elif meta.get("field_type") == Constants.FIELD_TYPE_NULL \
+                or meta.get("field_type") == Constants.FIELD_TYPE_LIST:
                 for _ in self.STRING_KEYS:
                     del self.meta_func_list[idx][_]
                 del self.meta_func_list[idx]["basic"]
