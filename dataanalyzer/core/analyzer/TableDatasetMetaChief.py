@@ -119,20 +119,37 @@ class TableDatasetMetaChief(DatasetMetaAbstract):
 
     @staticmethod
     def determine_type(type_stat: Dict) -> str:
-        ft_int = type_stat.get(Constants.FIELD_TYPE_INT)
-        ft_float = type_stat.get(Constants.FIELD_TYPE_FLOAT)
-        ft_string = type_stat.get(Constants.FIELD_TYPE_STRING)
-        ft_date = type_stat.get(Constants.FIELD_TYPE_DATE)
+        types = [
+            Constants.FIELD_TYPE_INT,
+            Constants.FIELD_TYPE_FLOAT,
+            Constants.FIELD_TYPE_STRING,
+            Constants.FIELD_TYPE_DATE,
+            Constants.FIELD_TYPE_LIST,
+        ]
 
-        if ft_int > ft_float and ft_int > ft_string and ft_int > ft_date:
-            return Constants.FIELD_TYPE_INT
-        if ft_float > ft_int and ft_float > ft_string and ft_float > ft_date:
-            return Constants.FIELD_TYPE_FLOAT
-        if ft_string > ft_int and ft_string > ft_float and ft_string > ft_date:
-            return Constants.FIELD_TYPE_STRING
-        if ft_date > ft_int and ft_date > ft_float and ft_date > ft_string:
-            return Constants.FIELD_TYPE_DATE
-        return Constants.FIELD_TYPE_NULL
+        max_val = 0
+        max_type = Constants.FIELD_TYPE_NULL
+        for const_type in types:
+            value = type_stat.get(const_type)
+            if max_val < value:
+                max_val = value
+                max_type = const_type
+        return max_type
+        # Deprecated ...
+        # ft_int = type_stat.get(Constants.FIELD_TYPE_INT)
+        # ft_float = type_stat.get(Constants.FIELD_TYPE_FLOAT)
+        # ft_string = type_stat.get(Constants.FIELD_TYPE_STRING)
+        # ft_date = type_stat.get(Constants.FIELD_TYPE_DATE)
+        #
+        # if ft_int > ft_float and ft_int > ft_string and ft_int > ft_date:
+        #     return Constants.FIELD_TYPE_INT
+        # if ft_float > ft_int and ft_float > ft_string and ft_float > ft_date:
+        #     return Constants.FIELD_TYPE_FLOAT
+        # if ft_string > ft_int and ft_string > ft_float and ft_string > ft_date:
+        #     return Constants.FIELD_TYPE_STRING
+        # if ft_date > ft_int and ft_date > ft_float and ft_date > ft_string:
+        #     return Constants.FIELD_TYPE_DATE
+        # return Constants.FIELD_TYPE_NULL
 
     @staticmethod
     def calculate_field_tag(meta) -> List[str]:

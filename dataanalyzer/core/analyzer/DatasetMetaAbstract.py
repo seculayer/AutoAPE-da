@@ -45,7 +45,8 @@ class DatasetMetaAbstract(object):
                 Constants.FIELD_TYPE_INT: 0,
                 Constants.FIELD_TYPE_FLOAT: 0,
                 Constants.FIELD_TYPE_STRING: 0,
-                Constants.FIELD_TYPE_DATE: 0
+                Constants.FIELD_TYPE_DATE: 0,
+                Constants.FIELD_TYPE_LIST: 0,
             },
             "statistics": dict(),
         }
@@ -105,6 +106,7 @@ class DatasetMetaAbstract(object):
         if data is None or len(data) == 0:
             return None, Constants.FIELD_TYPE_NULL
 
+        # date
         date_flag = False
         for date_format in date_format_list:
             try:
@@ -113,9 +115,15 @@ class DatasetMetaAbstract(object):
                 break
             except ValueError:
                 pass
+        # list
+        list_flag = False
+        if data[0] == "[" and data[-1] == "]":
+            list_flag = True
 
         if date_flag:
             return data, Constants.FIELD_TYPE_DATE
+        elif list_flag:
+            return data, Constants.FIELD_TYPE_LIST
         else:
             try:
                 return int(data), Constants.FIELD_TYPE_INT
