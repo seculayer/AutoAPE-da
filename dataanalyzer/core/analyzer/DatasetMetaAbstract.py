@@ -117,7 +117,7 @@ class DatasetMetaAbstract(object):
                 pass
         # list
         list_flag = False
-        if data[0] == "[" and data[-1] == "]":
+        if (data[0] == "[" and data[-1] == "]") or isinstance(data, list):
             list_flag = True
 
         if date_flag:
