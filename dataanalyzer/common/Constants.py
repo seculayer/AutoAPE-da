@@ -31,16 +31,20 @@ class Constants(metaclass=Singleton):
     STORAGE_SVC = _CONFIG.get("storage_svc")
     STORAGE_SFTP_PORT = _CONFIG.get("storage_sftp_port")
 
+    STORAGE_SSH_USER = _CONFIG.get("storage_ssh_username")
+    STORAGE_SSH_PASSWD = _CONFIG.get("storage_ssh_password")
+
     MRMS_SVC = _CONFIG.get("mrms_svc")
     MRMS_SFTP_PORT = _CONFIG.get("mrms_sftp_port")
     MRMS_REST_PORT = int(_CONFIG.get("mrms_rest_port"))
 
-    SSH_USER = _CONFIG.get("ssh_username")
-    SSH_PASSWD = _CONFIG.get("ssh_password")
+    MRMS_SSH_USER = _CONFIG.get("mrms_ssh_username")
+    MRMS_SSH_PASSWD = _CONFIG.get("mrms_ssh_password")
 
     # DATASET FORMAT
-    DATASET_FORMAT_TABLE = "1"
+    DATASET_FORMAT_TEXT = "1"
     DATASET_FORMAT_IMAGE = "2"
+    DATASET_FORMAT_TABLE = "3"
 
     # DATASET STATUS
     STATUS_DA_RM_REQ = "9"
