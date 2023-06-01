@@ -17,14 +17,18 @@ class DataLoaderFactory(object):
     def create(job_type: str, job_info: DAJobInfo, job_idx: str, sftp_client: PySFTPClient,
                mrms_sftp_client: PySFTPClient) -> DataLoader:
         class_dict = {
-            Constants.DATASET_FORMAT_TABLE: {
+            Constants.DATASET_FORMAT_TEXT: {
                 Constants.JOB_TYPE_CHIEF: DataLoaderTable,
                 Constants.JOB_TYPE_WORKER: DataLoaderTableWorker,
             },
             Constants.DATASET_FORMAT_IMAGE: {
                 Constants.JOB_TYPE_CHIEF: DataLoaderImage,
                 Constants.JOB_TYPE_WORKER: DataLoaderImageWorker,
-            }
+            },
+            Constants.DATASET_FORMAT_TABLE: {
+                Constants.JOB_TYPE_CHIEF: DataLoaderTable,
+                Constants.JOB_TYPE_WORKER: DataLoaderTableWorker,
+            },
         }
         class_nm = class_dict.get(job_info.get_dataset_format()).get(job_type)
         if class_nm is not None:

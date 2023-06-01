@@ -61,6 +61,9 @@ class DataLoaderImage(DataLoader):
 
             img_byte: bytes = self._read_image_binary(json_data)
             img_data: np.array = ImageUtils.load(img_byte)
+            assert img_data is not None, \
+                f"{json_data['file_path']/json_data['file_conv_nm']} file is not jpeg format, \
+                 orginal file nm : {json_data['file_ori_nm']}"
 
             self.dataset_meta.apply(img_data)
             self.dataset_meta.apply_annotation(json_data)

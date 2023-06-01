@@ -33,6 +33,14 @@
         <value>22</value>
     </property>
     <property>
+        <name>storage_ssh_username</name>
+        <value>HE12RmzKHQtH3bL7tTRqCg==</value>
+    </property>
+    <property>
+        <name>storage_ssh_password</name>
+        <value>jTf6XrqcYX1SAhv9JUPq+w==</value>
+    </property>
+    <property>
         <name>mrms_svc</name>
         <value>mrms-svc</value>
     </property>
@@ -45,11 +53,11 @@
         <value>9200</value>
     </property>
     <property>
-        <name>ssh_username</name>
+        <name>mrms_ssh_username</name>
         <value>HE12RmzKHQtH3bL7tTRqCg==</value>
     </property>
     <property>
-        <name>ssh_password</name>
+        <name>mrms_ssh_password</name>
         <value>jTf6XrqcYX1SAhv9JUPq+w==</value>
     </property>
     <property>
