@@ -36,15 +36,25 @@ class DataAnalyzerChief(KubePodSafetyTermThread, metaclass=Singleton):
             # request to mrms for worker create
             self.da_manager.request_worker_create()
 
-            # monitoring worker end
-            start_time = datetime.now()
-            while not self.da_manager.monitor_worker_end():
-                time.sleep(1)
-                if (datetime.now() - start_time).total_seconds() >= Constants.WORKER_WAITING_TIMEOUT:
-                    break
+            curr_cycle = 1
+            timeout_flag = False
+            while True:
+                # monitoring worker end
+                start_time = datetime.now()
+                while not self.da_manager.monitor_worker_end(curr_cycle):
+                    time.sleep(1)
+                    if (datetime.now() - start_time).total_seconds() >= Constants.WAITING_TIMEOUT:
+                        self.logger.error(f"Worker Waiting Time Out...")
+                        timeout_flag = True
+                        break
 
-            # calculate to global meta feature
-            self.da_manager.calculate_global_meta()
+                assert not timeout_flag
+
+                # calculate to global meta feature
+                self.da_manager.calculate_global_meta(curr_cycle)
+                if self.da_manager.check_end():
+                    break
+                curr_cycle += 1
 
             self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_DA_RM_REQ)
 

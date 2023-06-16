@@ -6,18 +6,13 @@ from typing import List, Dict
 from datetime import datetime
 
 from dataanalyzer.core.analyzer.dataset.common.NumInstance import NumInstance
-from dataanalyzer.core.analyzer.image.ImageShape import ImageShape
 from dataanalyzer.core.analyzer.table.categorical.Unique import Unique
-from dataanalyzer.core.analyzer.table.numeric.BasicStatistics import BasicStatistics
-from dataanalyzer.core.analyzer.table.date.Date import Date
-from dataanalyzer.core.analyzer.table.string.Word import Word
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
+from eda.core.analyze.FunctionInterface import FunctionInterface
 
 
 class DatasetMetaAbstract(object):
-    LOCAL_KEYS = []
-
     def __init__(self):
         self.n_rows = 0
         self.meta_dataset = dict()
@@ -25,6 +20,7 @@ class DatasetMetaAbstract(object):
 
         self.meta_list: List[Dict] = list()
         self.meta_func_list: List[Dict] = list()
+        self.eda_func_list = FunctionInterface.get_func_name_list()
 
     def initialize(self, job_info: DAJobInfo, meta_json: Dict = None):
         self._initialize_basic_dataset_meta(job_info)
@@ -60,31 +56,17 @@ class DatasetMetaAbstract(object):
             "statistics": dict(),
         }
 
-    def _initialize_meta_functions(self, job_info: DAJobInfo, meta) -> Dict:
-        return {
-            "basic": BasicStatistics(),
-            "unique": Unique(job_info.get_instances()),
-            "word": Word(),
-            "date": Date()
-        }
-
-    @staticmethod
-    def _initialize_image_meta_functions(job_info: DAJobInfo) -> Dict:
-        return {
-            "size": ImageShape(),
-        }
-
     @staticmethod
     def _initialize_label_meta_functions(job_info: DAJobInfo) -> Dict:
         return {
             "unique": Unique(job_info.get_instances()),
         }
 
-    def apply(self, data):
+    def apply(self, data, curr_cycle):
         raise NotImplementedError
 
-    def calculate(self):
-        raise NotImplementedError
+    # def calculate(self):
+    #     raise NotImplementedError
 
     def _statistic_calculate(self, idx, meta):
         # end
@@ -135,12 +117,11 @@ class DatasetMetaAbstract(object):
 
     def get_meta_list_for_worker(self) -> List[dict]:
         for idx, meta in enumerate(self.meta_list):
-            if meta.get("field_type") == Constants.FIELD_TYPE_INT or \
-               meta.get("field_type") == Constants.FIELD_TYPE_FLOAT:
-                for _ in self.LOCAL_KEYS:
-                    result_dict = self.meta_func_list[idx].get(_).to_dict()
-                    meta.get("statistics").update(result_dict)
+            local_meta_func = self.meta_func_list[idx]
+            for _key in local_meta_func:
+                result_dict = local_meta_func.get(_key).local_to_dict()
+                meta.get("statistics").update(result_dict)
         return self.meta_list
 
-    def calculate_global_meta(self, local_meta_list: List[List[Dict]]) -> None:
-        return None
+    def calculate_global_meta(self, local_meta_list: List[List[Dict]], curr_cycle) -> bool:
+        return False

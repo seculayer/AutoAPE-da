@@ -31,7 +31,7 @@ class DataLoaderImage(DataLoader):
             self.logger.info(f"n_worker : {n_workers}")
             return n_workers
         except Exception:
-            return DataLoader.determine_n_workers(self)
+            return super().determine_n_workers()
 
     def _get_pixels(self) -> int:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")

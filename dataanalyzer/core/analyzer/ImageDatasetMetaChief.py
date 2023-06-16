@@ -23,7 +23,7 @@ class ImageDatasetMetaChief(DatasetMetaAbstract):
         self.field_list = ["image"] + job_info.get_field_list()
 
         self.meta_list.append(self._initialize_image_metadata(0, "image"))
-        self.meta_func_list.append(self._initialize_image_meta_functions(job_info))
+        self.meta_func_list.append({})
 
         for idx, _tup in enumerate(self.COMMON_KEYS):
             self.meta_list.append(self._initialize_metadata(idx + 1, _tup[1]))

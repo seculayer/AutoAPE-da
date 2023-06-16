@@ -4,8 +4,11 @@
 # Powered by Seculayer © 2020 AI Service Model Team, R&D Center.
 
 # ---- python base packages
+from datetime import datetime
+import time
 
 from dataanalyzer.common.Common import Common
+from dataanalyzer.common.Constants import Constants
 from dataanalyzer.core.manager.DataAnalyzerWorkerManager import DataAnalyzerWorkerManager
 from pycmmn.KubePodSafetyTermThread import KubePodSafetyTermThread
 from pycmmn.Singleton import Singleton
@@ -26,7 +29,24 @@ class DataAnalyzerWorker(KubePodSafetyTermThread, metaclass=Singleton):
 
     def run(self) -> None:
         try:
-            self.da_manager.data_loader()
+            curr_cycle = 0
+            timeout_flag = False
+            while True:
+                # monitoring cheif end
+                start_time = datetime.now()
+                while not self.da_manager.monitor_chief_end(curr_cycle):
+                    time.sleep(1)
+                    if (datetime.now() - start_time).total_seconds() >= Constants.WAITING_TIMEOUT:
+                        self.logger.error(f"CHIEF Waiting Time Out...")
+                        timeout_flag = True
+                        break
+                self.da_manager.data_loader(curr_cycle=curr_cycle)
+
+                assert not timeout_flag
+
+                if self.da_manager.check_end():
+                    break
+                curr_cycle += 1
         except Exception as e:
             self.logger.error(e, exc_info=True)
         finally:

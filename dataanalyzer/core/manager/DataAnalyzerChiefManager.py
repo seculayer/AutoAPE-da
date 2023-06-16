@@ -59,8 +59,11 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
     def get_mrms_sftp_client(self):
         return self.mrms_sftp_manager.get_client()
 
-    def data_loader(self):
-        self.loader.load()
+    def data_loader(self, **kwargs):
+        self.loader.load(**kwargs)
+
+    def check_end(self) -> bool:
+        return self.loader.check_end()
 
     def request_worker_create(self):
         response = rq.get("{}/mrms/request_da_worker?id={}&num_worker={}".format(
@@ -68,11 +71,11 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
         )
         self.logger.info("create da worker : {} {} {}".format(response.status_code, response.reason, response.text))
 
-    def monitor_worker_end(self) -> bool:
-        return self.loader.worker_monitor()
+    def monitor_worker_end(self, curr_cycle) -> bool:
+        return self.loader.worker_monitor(curr_cycle)
 
-    def calculate_global_meta(self):
-        self.loader.global_meta()
+    def calculate_global_meta(self, curr_cycle) -> None:
+        self.loader.global_meta(curr_cycle)
 
     def request_da_terminate(self):
         response = rq.get("{}/mrms/insert_data_anls_info?dataset_id={}".format(
