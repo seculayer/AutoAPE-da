@@ -52,13 +52,12 @@ class DataLoaderTable(DataLoader):
             if not line:
                 break
             json_data = json.loads(line)
-            self.dataset_meta.apply(json_data)
+            self.dataset_meta.apply(json_data, 0)
             self.data_dist.write(json_data)
         f.close()
         self.data_dist.close()
 
         self.dataset_meta.set_field_type()
-        # self.dataset_meta.set_meta_func()
         self.write_meta(
             f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_CHIEF_{self.job_info.get_job_id()}_0.meta"
         )
