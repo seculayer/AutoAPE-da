@@ -5,6 +5,7 @@
 import json
 from logging import Logger
 from typing import Dict, List
+import fnmatch
 
 from dataanalyzer.core.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.common.Common import Common
@@ -41,6 +42,8 @@ class DataLoader(object):
         self.is_end = self.dataset_meta.calculate_global_meta(local_meta_list, curr_cycle)
         if self.is_end:
             self.write_meta(f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_META_{self.job_info.get_job_id()}.info")
+            if not Constants.WRITE_CYCLE_HISTORY:
+                self._remove_cycle_history()
         else:
             self.write_meta(f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_CHIEF_{self.job_info.get_job_id()}_{curr_cycle}.meta")
 
@@ -82,3 +85,9 @@ class DataLoader(object):
 
     def check_end(self) -> bool:
         return self.is_end
+
+    def _remove_cycle_history(self):
+        folder_path = f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}"
+        for file_name in self.mrms_sftp_client.get_file_list(folder_path):
+            if fnmatch.fnmatch(file_name, "DA_CHIEF*") or fnmatch.fnmatch(file_name, "DA_WORKER*"):
+                self.mrms_sftp_client.delete_file(f"{folder_path}/{file_name}")

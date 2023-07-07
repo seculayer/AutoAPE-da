@@ -68,6 +68,7 @@ class Constants(metaclass=Singleton):
     TAG_CATEGORY = "Categorical"
 
     WAITING_TIMEOUT = int(_CONFIG.get("waiting_timeout", "86400"))  # 1 day
+    WRITE_CYCLE_HISTORY = False if _CONFIG.get("write_cycle_history", "False").lower() == "false" else True
 
 
 if __name__ == '__main__':
