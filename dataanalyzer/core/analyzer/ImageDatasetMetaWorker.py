@@ -46,8 +46,8 @@ class ImageDatasetMetaWorker(DatasetMetaAbstract):
         for idx, fd in enumerate(self.meta_list):
             for _key in self.meta_func_list[idx].keys():
                 meta_func_cls: FunctionsAbstract = self.meta_func_list[idx].get(_key)
-                # 중복 계산 방지
-                if curr_cycle >= meta_func_cls.get_n_cycle():
+                # 필요값이 없을 경우(필요 cycle에 도달하지 못한 경우) 및 중복 계산 방지
+                if not curr_cycle == meta_func_cls.get_n_cycle() - 1:
                     continue
                 if fd.get("field_nm") == "image":
                     meta_func_cls.local_calc(img_data, self.meta_list[idx].get("statistics", {}))

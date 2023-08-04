@@ -133,11 +133,16 @@ class DatasetMetaAbstract(object):
                 tmp_list.append(worker_meta_list[idx])
             for _key in field_func.keys():
                 meta_func_cls: FunctionsAbstract = field_func.get(_key)
-                # 중복 계산 방지
-                if curr_cycle > meta_func_cls.get_n_cycle():
-                    continue
-                meta_func_cls.global_calc(tmp_list)
-                rst_dict.update(meta_func_cls.global_to_dict())
+                # 필요값이 없을 경우(필요 cycle에 도달하지 못한 경우) 및 중복 계산 방지
+                if not curr_cycle == meta_func_cls.get_n_cycle():
+                    pass
+                else:
+                    import datetime
+                    print(f"{_key}")
+                    start_time = datetime.datetime.now()
+                    meta_func_cls.global_calc(tmp_list)
+                    print(f"{curr_cycle} - {meta_func_cls.__class__} 걸린 시간 : {datetime.datetime.now() - start_time}")
+                    rst_dict.update(meta_func_cls.global_to_dict())
                 if meta_func_cls.get_n_cycle() > curr_cycle:
                     continue_cycle_flag = True
 
