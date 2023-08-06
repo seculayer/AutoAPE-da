@@ -6,18 +6,13 @@ from typing import List, Dict
 from datetime import datetime
 
 from dataanalyzer.core.analyzer.dataset.common.NumInstance import NumInstance
-from dataanalyzer.core.analyzer.image.ImageShape import ImageShape
-from dataanalyzer.core.analyzer.table.categorical.Unique import Unique
-from dataanalyzer.core.analyzer.table.numeric.BasicStatistics import BasicStatistics
-from dataanalyzer.core.analyzer.table.date.Date import Date
-from dataanalyzer.core.analyzer.table.string.Word import Word
 from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
+from eda.core.analyze.FunctionInterface import FunctionInterface
+from eda.core.analyze.FunctionsAbstract import FunctionsAbstract
 
 
 class DatasetMetaAbstract(object):
-    LOCAL_KEYS = []
-
     def __init__(self):
         self.n_rows = 0
         self.meta_dataset = dict()
@@ -25,6 +20,7 @@ class DatasetMetaAbstract(object):
 
         self.meta_list: List[Dict] = list()
         self.meta_func_list: List[Dict] = list()
+        self.eda_func_list = FunctionInterface.get_func_name_list()
 
     def initialize(self, job_info: DAJobInfo, meta_json: Dict = None):
         self._initialize_basic_dataset_meta(job_info)
@@ -60,39 +56,8 @@ class DatasetMetaAbstract(object):
             "statistics": dict(),
         }
 
-    def _initialize_meta_functions(self, job_info: DAJobInfo, meta) -> Dict:
-        return {
-            "basic": BasicStatistics(),
-            "unique": Unique(job_info.get_instances()),
-            "word": Word(),
-            "date": Date()
-        }
-
-    @staticmethod
-    def _initialize_image_meta_functions(job_info: DAJobInfo) -> Dict:
-        return {
-            "size": ImageShape(),
-        }
-
-    @staticmethod
-    def _initialize_label_meta_functions(job_info: DAJobInfo) -> Dict:
-        return {
-            "unique": Unique(job_info.get_instances()),
-        }
-
-    def apply(self, data):
+    def apply(self, data, curr_cycle) -> None:
         raise NotImplementedError
-
-    def calculate(self):
-        raise NotImplementedError
-
-    def _statistic_calculate(self, idx, meta):
-        # end
-        for _ in self.meta_func_list[idx].keys():
-            self.meta_func_list[idx].get(_).calculate()
-            result_dict = self.meta_func_list[idx].get(_).to_dict()
-            if len(result_dict) > 0:
-                meta.get("statistics").update(result_dict)
 
     def get_meta_list(self) -> List[dict]:
         return self.meta_list
@@ -135,12 +100,71 @@ class DatasetMetaAbstract(object):
 
     def get_meta_list_for_worker(self) -> List[dict]:
         for idx, meta in enumerate(self.meta_list):
-            if meta.get("field_type") == Constants.FIELD_TYPE_INT or \
-               meta.get("field_type") == Constants.FIELD_TYPE_FLOAT:
-                for _ in self.LOCAL_KEYS:
-                    result_dict = self.meta_func_list[idx].get(_).to_dict()
-                    meta.get("statistics").update(result_dict)
+            local_meta_func = self.meta_func_list[idx]
+            for _key in local_meta_func:
+                result_dict = local_meta_func.get(_key).local_to_dict()
+                meta.get("statistics").update(result_dict)
         return self.meta_list
 
-    def calculate_global_meta(self, local_meta_list: List[List[Dict]]) -> None:
-        return None
+    # for chief
+    def set_meta_func(self):
+        if len(self.meta_func_list) > 0:
+            self.meta_func_list.clear()
+
+        for idx, meta in enumerate(self.meta_list):
+            field_type = meta["field_type"]
+
+            func_cls_list = FunctionInterface.get_func_cls_list(self.eda_func_list)
+            cls_dict = FunctionInterface.get_available_func_dict(func_cls_list, field_type)
+            for key in cls_dict.keys():
+                cls_dict[key] = cls_dict[key](num_instances=self.meta_dataset["instances"])
+            self.meta_func_list.append(cls_dict)
+
+    # Chief-Worker Statistics
+    def calculate_global_meta(self, local_meta_list: List[List[Dict]], curr_cycle) -> bool:
+        self.set_meta_func()
+
+        continue_cycle_flag = False
+
+        for idx, field_func in enumerate(self.meta_func_list):
+            tmp_list = list()
+            rst_dict = dict()
+            for worker_meta_list in local_meta_list:
+                tmp_list.append(worker_meta_list[idx])
+            for _key in field_func.keys():
+                meta_func_cls: FunctionsAbstract = field_func.get(_key)
+                # 필요값이 없을 경우(필요 cycle에 도달하지 못한 경우) 및 중복 계산 방지
+                if not curr_cycle == meta_func_cls.get_n_cycle():
+                    pass
+                else:
+                    import datetime
+                    print(f"{_key}")
+                    start_time = datetime.datetime.now()
+                    meta_func_cls.global_calc(tmp_list)
+                    print(f"{curr_cycle} - {meta_func_cls.__class__} 걸린 시간 : {datetime.datetime.now() - start_time}")
+                    rst_dict.update(meta_func_cls.global_to_dict())
+                if meta_func_cls.get_n_cycle() > curr_cycle:
+                    continue_cycle_flag = True
+
+            self.meta_list[idx]["statistics"].update(rst_dict)
+
+        return not continue_cycle_flag
+
+    @staticmethod
+    def determine_type(type_stat: Dict) -> str:
+        types = [
+            Constants.FIELD_TYPE_INT,
+            Constants.FIELD_TYPE_FLOAT,
+            Constants.FIELD_TYPE_STRING,
+            Constants.FIELD_TYPE_DATE,
+            Constants.FIELD_TYPE_LIST,
+        ]
+
+        max_val = 0
+        max_type = Constants.FIELD_TYPE_NULL
+        for const_type in types:
+            value = type_stat.get(const_type)
+            if max_val < value:
+                max_val = value
+                max_type = const_type
+        return max_type

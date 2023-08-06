@@ -6,6 +6,7 @@ from typing import Dict, List
 
 import numpy as np
 
+from dataanalyzer.common.Constants import Constants
 from dataanalyzer.core.analyzer.DatasetMetaAbstract import DatasetMetaAbstract
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
@@ -22,31 +23,24 @@ class ImageDatasetMetaChief(DatasetMetaAbstract):
 
         self.field_list = ["image"] + job_info.get_field_list()
 
-        self.meta_list.append(self._initialize_image_metadata(0, "image"))
-        self.meta_func_list.append(self._initialize_image_meta_functions(job_info))
-
-        for idx, _tup in enumerate(self.COMMON_KEYS):
-            self.meta_list.append(self._initialize_metadata(idx + 1, _tup[1]))
-            self.meta_func_list.append(self._initialize_label_meta_functions(job_info))
+        for idx, field_nm in enumerate(self.field_list):
+            if field_nm == "image":
+                self.meta_list.append(self._initialize_image_metadata(0, Constants.FIELD_TYPE_IMAGE))
+            else:
+                self.meta_list.append(self._initialize_metadata(idx, field_nm))
 
     def _initialize_basic_dataset_meta(self, job_info: DAJobInfo) -> None:
         super()._initialize_basic_dataset_meta(job_info)
 
-    def apply(self, data: np.array):
-        for _ in self.IMAGE_KEYS:
-            self.meta_func_list[0].get(_).apply(data)
+    def apply(self, data: np.array, curr_cycle) -> None:
+        for idx, field_nm in enumerate(self.field_list):
+            if field_nm == "image":
+                continue
+            result, f_type = DatasetMetaAbstract.field_type(data.get(field_nm))
+            self.meta_list[idx].get("type_stat")[f_type] += 1
 
-    def apply_annotation(self, json_data: Dict):
-        for idx, _tup in enumerate(self.COMMON_KEYS):
-            self.meta_func_list[idx + 1].get(_tup[0]).apply(json_data.get(_tup[1]))
-
-    def calculate(self):
+    def set_field_type(self) -> None:
         for idx, meta in enumerate(self.meta_list):
-            if meta["field_nm"] == "label":
-                meta["field_type"] = "string"
-            self._statistic_calculate(idx, meta)
-
-    # Chief-Worker Statistics
-    def calculate_global_meta(self, local_meta_list: List[List[Dict]]) -> None:
-        pass
-
+            if meta.get("field_nm") == "image":
+                continue
+            meta["field_type"] = self.determine_type(meta.get("type_stat"))

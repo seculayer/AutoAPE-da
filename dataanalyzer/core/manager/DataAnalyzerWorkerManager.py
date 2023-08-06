@@ -13,6 +13,9 @@ class DataAnalyzerWorkerManager(DataAnalyzerChiefManager, metaclass=Singleton):
         DataAnalyzerChiefManager.__init__(self)
         self.job_type = Constants.JOB_TYPE_WORKER
 
+    def monitor_chief_end(self, curr_cycle) -> bool:
+        return self.loader.chief_monitor(curr_cycle)
+
 
 if __name__ == '__main__':
     dam = DataAnalyzerWorkerManager()

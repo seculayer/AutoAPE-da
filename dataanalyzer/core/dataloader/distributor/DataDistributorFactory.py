@@ -10,7 +10,7 @@ from dataanalyzer.core.dataloader.distributor.DataDistributorTable import DataDi
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 
 
-class DataDistributorFactory(object):
+class VDataDistributorFactory(object):
     @staticmethod
     def create(job_info: DAJobInfo, num_worker: int) -> DataDistributorTable:
         class_dict: Dict = {

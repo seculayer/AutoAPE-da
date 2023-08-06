@@ -25,11 +25,13 @@
     <property>
         <name>storage_svc</name>
 <!--        <value>ape-storage-svc</value>-->
-        <value>10.1.35.72</value>
+        <value>10.1.35.230</value>
+<!--        <value>10.1.35.118</value>-->
     </property>
     <property>
         <name>storage_sftp_port</name>
 <!--        <value>10122</value>-->
+<!--        <value>30122</value>-->
         <value>22</value>
     </property>
     <property>
@@ -42,15 +44,18 @@
     </property>
     <property>
         <name>mrms_svc</name>
-        <value>mrms-svc</value>
+<!--        <value>mrms-svc</value>-->
+        <value>10.1.35.230</value>
+<!--        <value>10.1.35.118</value>-->
     </property>
     <property>
         <name>mrms_sftp_port</name>
-        <value>10022</value>
+<!--        <value>30022</value>-->
+        <value>22</value>
     </property>
     <property>
         <name>mrms_rest_port</name>
-        <value>9200</value>
+        <value>31920</value>
     </property>
     <property>
         <name>mrms_ssh_username</name>
@@ -70,8 +75,13 @@
         <description>MB</description>
     </property>
     <property>
-        <name>worker_waiting_timeout</name>
+        <name>waiting_timeout</name>
         <value>86400</value>
         <description>seconds</description>
+    </property>
+    <property>
+        <name>write_cycle_history</name>
+        <value>False</value>
+        <description>True or False</description>
     </property>
 </configuration>
