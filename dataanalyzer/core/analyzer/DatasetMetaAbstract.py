@@ -137,11 +137,11 @@ class DatasetMetaAbstract(object):
                 if not curr_cycle == meta_func_cls.get_n_cycle():
                     pass
                 else:
-                    import datetime
-                    print(f"{_key}")
-                    start_time = datetime.datetime.now()
+                    # import datetime
+                    # print(f"{_key}")
+                    # start_time = datetime.datetime.now()
                     meta_func_cls.global_calc(tmp_list)
-                    print(f"{curr_cycle} - {meta_func_cls.__class__} 걸린 시간 : {datetime.datetime.now() - start_time}")
+                    # print(f"{curr_cycle} - {meta_func_cls.__class__} 걸린 시간 : {datetime.datetime.now() - start_time}")
                     rst_dict.update(meta_func_cls.global_to_dict())
                 if meta_func_cls.get_n_cycle() > curr_cycle:
                     continue_cycle_flag = True

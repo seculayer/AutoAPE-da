@@ -49,17 +49,17 @@ class TableDatasetMetaWorker(DatasetMetaAbstract):
     #     return workers_instance
 
     def apply(self, data, curr_cycle):
-        import datetime
+        # import datetime
         for idx, fd in enumerate(self.meta_list):
-            print(f'{fd.get("field_nm")}')
+            # print(f'{fd.get("field_nm")}')
             for _key in self.meta_func_list[idx].keys():
                 meta_func_cls: FunctionsAbstract = self.meta_func_list[idx].get(_key)
                 # 필요값이 없을 경우(필요 cycle에 도달하지 못한 경우) 및 중복 계산 방지
                 if not curr_cycle == meta_func_cls.get_n_cycle() - 1:
                     continue
-                start_time = datetime.datetime.now()
+                # start_time = datetime.datetime.now()
                 meta_func_cls.local_calc(data.get(fd.get("field_nm")), self.meta_list[idx].get("statistics", {}))
-                print(f"{curr_cycle} - {meta_func_cls.__class__} 걸린 시간 : {datetime.datetime.now() - start_time}")
+                # print(f"{curr_cycle} - {meta_func_cls.__class__} 걸린 시간 : {datetime.datetime.now() - start_time}")
 
     def check_end(self, curr_cycle) -> bool:
         is_continue = False
