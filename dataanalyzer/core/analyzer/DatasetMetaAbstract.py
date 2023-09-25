@@ -146,6 +146,8 @@ class DatasetMetaAbstract(object):
                 if meta_func_cls.get_n_cycle() > curr_cycle:
                     continue_cycle_flag = True
 
+            rst_dict = self.statistics_exception(rst_dict)
+
             self.meta_list[idx]["statistics"].update(rst_dict)
 
         return not continue_cycle_flag
@@ -168,3 +170,11 @@ class DatasetMetaAbstract(object):
                 max_val = value
                 max_type = const_type
         return max_type
+
+    @staticmethod
+    def statistics_exception(rst_dict: dict):
+        # is_category가 false일 경우 valueratio 삭제(의미 없음)
+        if rst_dict.get("is_category", "False") == "False" and rst_dict.__contains__("valueratio"):
+            rst_dict.pop("valueratio")
+
+        return rst_dict
