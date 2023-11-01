@@ -15,7 +15,7 @@ from pycmmn.sftp.PySFTPClient import PySFTPClient
 class DataLoaderFactory(object):
     @staticmethod
     def create(job_type: str, job_info: DAJobInfo, job_idx: str, sftp_client: PySFTPClient,
-               mrms_sftp_client: PySFTPClient) -> DataLoader:
+               mrms_sftp_client: PySFTPClient, target_field: str) -> DataLoader:
         class_dict = {
             Constants.DATASET_FORMAT_TEXT: {
                 Constants.JOB_TYPE_CHIEF: DataLoaderTable,
@@ -33,7 +33,7 @@ class DataLoaderFactory(object):
         class_nm = class_dict.get(job_info.get_dataset_format()).get(job_type)
         if class_nm is not None:
             if job_type == Constants.JOB_TYPE_CHIEF:
-                return class_nm(job_info, sftp_client, mrms_sftp_client)
+                return class_nm(job_info, sftp_client, mrms_sftp_client, target_field)
             else:
                 return class_nm(job_info, sftp_client, mrms_sftp_client, job_idx)
         else:

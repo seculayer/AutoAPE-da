@@ -16,11 +16,12 @@ from pycmmn.exceptions.ETCException import ETCException
 
 
 class DataLoaderTable(DataLoader):
-    def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
+    def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient, target_field: str):
         DataLoader.__init__(self, job_info, sftp_client, mrms_sftp_client)
         self.data_dist = DataDistributorTable(job_info, self.num_worker)
         self.data_dist.initialize(mrms_sftp_client)
-        self.dataset_meta: TableDatasetMetaChief = TableDatasetMetaChief()
+        self.target_field = target_field
+        self.dataset_meta: TableDatasetMetaChief = TableDatasetMetaChief(target_field=self.target_field)
 
     def determine_n_workers(self):
         try:
@@ -32,6 +33,19 @@ class DataLoaderTable(DataLoader):
                 return n_workers + 1
         except Exception:
             return super().determine_n_workers()
+
+    def load_local_meta(self, idx, curr_cycle):
+        f = self.mrms_sftp_client.open(
+            f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_WORKER_{self.job_info.get_job_id()}_{idx}_{curr_cycle-1}.meta",
+            "r"
+        )
+        json_f = json.loads(f.read())
+        meta_list = json_f.get("meta")
+        dataset_meta_list = json_f.get("dataset_meta_list")
+        for idx, _meta in enumerate(meta_list):
+            _meta.get("statistics").update(dataset_meta_list[idx])
+        f.close()
+        return meta_list
 
     def load(self, **kwargs) -> None:
         self.dataset_meta.initialize(self.job_info)
@@ -67,5 +81,6 @@ class DataLoaderTable(DataLoader):
             "file_list": self.data_dist.get_file_list(),
             "file_num_line": self.data_dist.get_fileline_list(),
             "meta": self.dataset_meta.get_meta_list(),
-            "dataset_meta": self.dataset_meta.get_meta_dataset()
+            "dataset_meta": self.dataset_meta.get_meta_dataset(),
+            "dataset_meta_list": self.dataset_meta.get_dataset_meta_list()
         }

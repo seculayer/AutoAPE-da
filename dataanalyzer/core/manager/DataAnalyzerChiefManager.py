@@ -4,6 +4,7 @@
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import requests as rq
 from typing import Union
+import json
 
 from dataanalyzer.common.Common import Common
 from dataanalyzer.common.Constants import Constants
@@ -37,11 +38,16 @@ class DataAnalyzerChiefManager(object, metaclass=Singleton):
 
         self.job_info = self.load_job_info(job_id)
         self.logger.info(str(self.job_info))
+        response = rq.post(f"{self.rest_root_url}/mrms/get_dataset_info", json={"dataset_id": job_id})
+        response_json = json.loads(response.text)
+        target_field = response_json.get("target_field")
+        self.logger.info(f"get target field: {response.status_code} {response.reason} {target_field}")
 
         self.loader = DataLoaderFactory.create(
             self.job_type, self.job_info, job_idx,
             self.storage_sftp_manager.get_client(),
-            self.mrms_sftp_manager.get_client()
+            self.mrms_sftp_manager.get_client(),
+            target_field
         )
         self.logger.info("DataAnalyzerManager initialized.")
 

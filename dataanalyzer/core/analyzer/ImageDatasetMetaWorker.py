@@ -32,7 +32,7 @@ class ImageDatasetMetaWorker(DatasetMetaAbstract):
         field_type = meta.get("field_type")
         # worker_n_instances = self._get_worker_n_instance(job_info)
 
-        func_cls_list = FunctionInterface.get_func_cls_list(self.eda_func_list)
+        func_cls_list = FunctionInterface.get_func_cls_list("eda.core.analyze.functions.monomial", self.monomial_func_list)
         cls_dict = FunctionInterface.get_available_func_dict(func_cls_list, field_type)
         for key in cls_dict.keys():
             # cls_dict[key] = cls_dict[key](num_instances=worker_n_instances)
@@ -65,4 +65,6 @@ class ImageDatasetMetaWorker(DatasetMetaAbstract):
         return not is_continue
 
     def get_meta_list(self) -> List[dict]:
-        return self.get_meta_list_for_worker()
+        self.set_meta_list_for_worker()
+
+        return self.meta_list

@@ -17,8 +17,9 @@ from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class DataLoaderImage(DataLoader):
-    def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
+    def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient, target_field: str):
         DataLoader.__init__(self, job_info, sftp_client, mrms_sftp_client)
+        self.target_field = target_field
         self.data_dist = DataDistributorImage(self.job_info, self.num_worker)
         self.data_dist.initialize(mrms_sftp_client)
 
@@ -46,7 +47,7 @@ class DataLoaderImage(DataLoader):
 
     def load(self, **kwargs) -> None:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
-        self.dataset_meta: ImageDatasetMetaChief = ImageDatasetMetaChief()
+        self.dataset_meta: ImageDatasetMetaChief = ImageDatasetMetaChief(target_field=self.target_field)
         self.dataset_meta.initialize(self.job_info)
 
         self.data_dist.make_fileline_list()

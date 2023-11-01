@@ -15,8 +15,9 @@ class ImageDatasetMetaChief(DatasetMetaAbstract):
     IMAGE_KEYS = ["size"]
     COMMON_KEYS = [("unique", "label")]
 
-    def __init__(self):
+    def __init__(self, target_field):
         DatasetMetaAbstract.__init__(self)
+        self.target_field = target_field
 
     def initialize(self, job_info: DAJobInfo, meta_json: Dict = None):
         super().initialize(job_info)
