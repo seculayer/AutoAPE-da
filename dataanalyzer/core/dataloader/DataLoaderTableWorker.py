@@ -69,7 +69,8 @@ class DataLoaderTableWorker(DataLoader):
 
     def generate_meta(self) -> Dict:
         return {
-            "meta": self.dataset_meta.get_meta_list()
+            "meta": self.dataset_meta.get_meta_list(),
+            "dataset_meta_list": self.dataset_meta.get_dataset_meta_list()
         }
 
     def global_meta(self, n_cycle):

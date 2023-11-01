@@ -10,6 +10,8 @@ from dataanalyzer.common.Constants import Constants
 from dataanalyzer.info.DAJobInfo import DAJobInfo
 from eda.core.analyze.FunctionInterface import FunctionInterface
 from eda.core.analyze.FunctionsAbstract import FunctionsAbstract
+import eda.core.analyze.functions.monomial
+import eda.core.analyze.functions.binomial
 
 
 class DatasetMetaAbstract(object):
@@ -20,7 +22,10 @@ class DatasetMetaAbstract(object):
 
         self.meta_list: List[Dict] = list()
         self.meta_func_list: List[Dict] = list()
-        self.eda_func_list = FunctionInterface.get_func_name_list()
+        self.dataset_meta_list: List[Dict] = list()
+        self.dataset_func_list: List[Dict] = list()
+        self.monomial_func_list = FunctionInterface.get_func_name_list(eda.core.analyze.functions.monomial.__file__)
+        self.binomial_func_list = FunctionInterface.get_func_name_list(eda.core.analyze.functions.binomial.__file__)
 
     def initialize(self, job_info: DAJobInfo, meta_json: Dict = None):
         self._initialize_basic_dataset_meta(job_info)
@@ -59,8 +64,11 @@ class DatasetMetaAbstract(object):
     def apply(self, data, curr_cycle) -> None:
         raise NotImplementedError
 
-    def get_meta_list(self) -> List[dict]:
+    def get_meta_list(self) -> List[Dict]:
         return self.meta_list
+
+    def get_dataset_meta_list(self) -> List[Dict]:
+        return self.dataset_meta_list
 
     def get_meta_dataset(self) -> Dict:
         return self.meta_dataset
@@ -98,13 +106,12 @@ class DatasetMetaAbstract(object):
                 except ValueError:
                     return data, Constants.FIELD_TYPE_STRING
 
-    def get_meta_list_for_worker(self) -> List[dict]:
+    def set_meta_list_for_worker(self) -> None:
         for idx, meta in enumerate(self.meta_list):
             local_meta_func = self.meta_func_list[idx]
             for _key in local_meta_func:
                 result_dict = local_meta_func.get(_key).local_to_dict()
                 meta.get("statistics").update(result_dict)
-        return self.meta_list
 
     # for chief
     def set_meta_func(self):
@@ -114,7 +121,8 @@ class DatasetMetaAbstract(object):
         for idx, meta in enumerate(self.meta_list):
             field_type = meta["field_type"]
 
-            func_cls_list = FunctionInterface.get_func_cls_list(self.eda_func_list)
+            func_cls_list = FunctionInterface.get_func_cls_list("eda.core.analyze.functions.monomial",
+                                                                self.monomial_func_list)
             cls_dict = FunctionInterface.get_available_func_dict(func_cls_list, field_type)
             for key in cls_dict.keys():
                 cls_dict[key] = cls_dict[key](num_instances=self.meta_dataset["instances"])
@@ -127,10 +135,10 @@ class DatasetMetaAbstract(object):
         continue_cycle_flag = False
 
         for idx, field_func in enumerate(self.meta_func_list):
-            tmp_list = list()
-            rst_dict = dict()
-            for worker_meta_list in local_meta_list:
-                tmp_list.append(worker_meta_list[idx])
+            workers_meta_list = list()
+            meta_rst_dict = dict()
+            for meta_list in local_meta_list:
+                workers_meta_list.append(meta_list[idx])
             for _key in field_func.keys():
                 meta_func_cls: FunctionsAbstract = field_func.get(_key)
                 # 필요값이 없을 경우(필요 cycle에 도달하지 못한 경우) 및 중복 계산 방지
@@ -140,15 +148,14 @@ class DatasetMetaAbstract(object):
                     # import datetime
                     # print(f"{_key}")
                     # start_time = datetime.datetime.now()
-                    meta_func_cls.global_calc(tmp_list)
+                    meta_func_cls.global_calc(workers_meta_list)
                     # print(f"{curr_cycle} - {meta_func_cls.__class__} 걸린 시간 : {datetime.datetime.now() - start_time}")
-                    rst_dict.update(meta_func_cls.global_to_dict())
+                    meta_rst_dict.update(meta_func_cls.global_to_dict())
                 if meta_func_cls.get_n_cycle() > curr_cycle:
                     continue_cycle_flag = True
 
-            rst_dict = self.statistics_exception(rst_dict)
-
-            self.meta_list[idx]["statistics"].update(rst_dict)
+            meta_rst_dict = self.statistics_exception(meta_rst_dict)
+            self.meta_list[idx]["statistics"].update(meta_rst_dict)
 
         return not continue_cycle_flag
 
