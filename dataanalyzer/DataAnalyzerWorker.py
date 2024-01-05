@@ -19,7 +19,7 @@ class DataAnalyzerWorker(KubePodSafetyTermThread, metaclass=Singleton):
     def __init__(self, job_id: str, job_idx: str):
         KubePodSafetyTermThread.__init__(self)
         self.logger = Common.LOGGER.getLogger()
-
+        self.job_id = job_id
         self.da_manager = DataAnalyzerWorkerManager()
         try:
             self.da_manager.initialize(job_id, job_idx)
@@ -49,6 +49,7 @@ class DataAnalyzerWorker(KubePodSafetyTermThread, metaclass=Singleton):
                 curr_cycle += 1
         except Exception as e:
             self.logger.error(e, exc_info=True)
+            self.da_manager.request_update_dataset_status(self.job_id, Constants.STATUS_ERROR)
         finally:
             self.da_manager.terminate()
             self.logger.info("DataAnalyzer terminate!")
