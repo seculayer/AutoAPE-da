@@ -171,11 +171,21 @@ class DatasetMetaAbstract(object):
 
         max_val = 0
         max_type = Constants.FIELD_TYPE_NULL
+        count = 0
+        string_type_val = 0
         for const_type in types:
             value = type_stat.get(const_type)
+            count += value
             if max_val < value:
                 max_val = value
                 max_type = const_type
+
+            if const_type == Constants.FIELD_TYPE_STRING:
+                string_type_val = value
+
+        if max_type != Constants.FIELD_TYPE_STRING and string_type_val / count > 0.1:
+            max_type = Constants.FIELD_TYPE_STRING
+
         return max_type
 
     @staticmethod
