@@ -31,16 +31,20 @@ class Constants(metaclass=Singleton):
     STORAGE_SVC = _CONFIG.get("storage_svc")
     STORAGE_SFTP_PORT = _CONFIG.get("storage_sftp_port")
 
+    STORAGE_SSH_USER = _CONFIG.get("storage_ssh_username")
+    STORAGE_SSH_PASSWD = _CONFIG.get("storage_ssh_password")
+
     MRMS_SVC = _CONFIG.get("mrms_svc")
     MRMS_SFTP_PORT = _CONFIG.get("mrms_sftp_port")
     MRMS_REST_PORT = int(_CONFIG.get("mrms_rest_port"))
 
-    SSH_USER = _CONFIG.get("ssh_username")
-    SSH_PASSWD = _CONFIG.get("ssh_password")
+    MRMS_SSH_USER = _CONFIG.get("mrms_ssh_username")
+    MRMS_SSH_PASSWD = _CONFIG.get("mrms_ssh_password")
 
     # DATASET FORMAT
-    DATASET_FORMAT_TABLE = "1"
+    DATASET_FORMAT_TEXT = "1"
     DATASET_FORMAT_IMAGE = "2"
+    DATASET_FORMAT_TABLE = "3"
 
     # DATASET STATUS
     STATUS_DA_RM_REQ = "9"
@@ -53,6 +57,7 @@ class Constants(metaclass=Singleton):
     FIELD_TYPE_STRING = "string"
     FIELD_TYPE_IMAGE = "image"
     FIELD_TYPE_DATE = "date"
+    FIELD_TYPE_LIST = "list"
 
     JOB_TYPE_CHIEF = "chief"
     JOB_TYPE_WORKER = "worker"
@@ -62,7 +67,8 @@ class Constants(metaclass=Singleton):
     # FIELD TAG
     TAG_CATEGORY = "Categorical"
 
-    WORKER_WAITING_TIMEOUT = int(_CONFIG.get("worker_waiting_timeout", "86400"))  # 1 day
+    WAITING_TIMEOUT = int(_CONFIG.get("waiting_timeout", "86400"))  # 1 day
+    WRITE_CYCLE_HISTORY = False if _CONFIG.get("write_cycle_history", "False").lower() == "false" else True
 
 
 if __name__ == '__main__':

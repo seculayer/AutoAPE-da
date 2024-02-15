@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dataanalyzer"
-version = "1.0.0"
+version = "4.0-dev"
 description = ""
 authors = ["Jin Kim <jin.kim@seculayer.com>"]
 license = "Apache-2.0"
@@ -25,16 +25,20 @@ pytest-cov = "^3.0.0"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-profile = "black"
-
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = "-ra -q --failed-first -n auto"
 testpaths = ["tests"]
 
-[tool.pylint.messages_control]
-disable = "C0330, C0326"
+[tool.black]
+line-length = 120
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 120
 
 [tool.pylint.format]
-max-line-length = "88"
+max-line-length = "120"

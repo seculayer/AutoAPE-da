@@ -17,8 +17,9 @@ from pycmmn.sftp.PySFTPClient import PySFTPClient
 
 
 class DataLoaderImage(DataLoader):
-    def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient):
+    def __init__(self, job_info: DAJobInfo, sftp_client: PySFTPClient, mrms_sftp_client: PySFTPClient, target_field: str):
         DataLoader.__init__(self, job_info, sftp_client, mrms_sftp_client)
+        self.target_field = target_field
         self.data_dist = DataDistributorImage(self.job_info, self.num_worker)
         self.data_dist.initialize(mrms_sftp_client)
 
@@ -31,7 +32,7 @@ class DataLoaderImage(DataLoader):
             self.logger.info(f"n_worker : {n_workers}")
             return n_workers
         except Exception:
-            return DataLoader.determine_n_workers(self)
+            return super().determine_n_workers()
 
     def _get_pixels(self) -> int:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
@@ -44,9 +45,9 @@ class DataLoaderImage(DataLoader):
         f.close()
         return pixels
 
-    def load(self) -> None:
+    def load(self, **kwargs) -> None:
         f = self.sftp_client.open("{}/{}".format(self.job_info.get_filepath(), self.job_info.get_filename()), "r")
-        self.dataset_meta: ImageDatasetMetaChief = ImageDatasetMetaChief()
+        self.dataset_meta: ImageDatasetMetaChief = ImageDatasetMetaChief(target_field=self.target_field)
         self.dataset_meta.initialize(self.job_info)
 
         self.data_dist.make_fileline_list()
@@ -61,9 +62,11 @@ class DataLoaderImage(DataLoader):
 
             img_byte: bytes = self._read_image_binary(json_data)
             img_data: np.array = ImageUtils.load(img_byte)
+            assert img_data is not None, \
+                f"{json_data['file_path']/json_data['file_conv_nm']} file is not jpeg format, \
+                 orginal file nm : {json_data['file_ori_nm']}"
 
-            self.dataset_meta.apply(img_data)
-            self.dataset_meta.apply_annotation(json_data)
+            self.dataset_meta.apply(json_data, 0)
 
             self.data_dist.write_image(json_data, img_byte)
             self.data_dist.write(json_data)
@@ -71,12 +74,12 @@ class DataLoaderImage(DataLoader):
             idx += 1
             if idx % 100 == 0:
                 self.logger.info("file : {} / {} loaded...".format(idx, self.job_info.get_instances()))
-
-        self.dataset_meta.calculate()
         f.close()
         self.data_dist.close()
+
+        self.dataset_meta.set_field_type()
         self.write_meta(
-            f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_CHIEF_{self.job_info.get_job_id()}.meta"
+            f"{Constants.DIR_DA_PATH}/{self.job_info.get_job_id()}/DA_CHIEF_{self.job_info.get_job_id()}_0.meta"
         )
 
     def _read_image_binary(self, annotation_data: Dict) -> bytes:

@@ -3,7 +3,7 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
 import json
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import paramiko
 
@@ -19,7 +19,7 @@ class DataDistributorTable(object):
 
         self.job_info: DAJobInfo = job_info
         self.num_worker: int = num_worker
-        self.mrms_sftp_client = None
+        self.mrms_sftp_client: Union[PySFTPClient, None] = None
         self.max_rows, self.mod = self.determine_max_rows(self.job_info.get_instances())
         self.current: int = 0
         self.current_worker_n: int = 0
@@ -51,7 +51,7 @@ class DataDistributorTable(object):
             self.writer = None
             filename = self.get_filename()
             if self.mrms_sftp_client.is_exist(filename + ".done"):
-                self.mrms_sftp_client.remove(filename + ".done")
+                self.mrms_sftp_client.delete_file(filename + ".done")
             self.mrms_sftp_client.rename(filename + ".tmp", filename + ".done")
 
     def write(self, data: Dict):
